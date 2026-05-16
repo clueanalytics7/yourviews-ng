@@ -103,22 +103,35 @@
 
         async function fetchIssues() {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getIssues`);
+                // IMPORTANT: Adding redirect: 'follow' and simplified headers
+                const response = await fetch(`${SCRIPT_URL}?action=getIssues`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
                 const data = await response.json();
-                allIssues = data;
+                allIssues = Array.isArray(data) ? data : [];
                 renderIssues();
             } catch (err) {
                 console.error("Fetch error:", err);
                 document.getElementById('issues-grid').innerHTML = `
                     <div class="col-span-full text-center py-12 text-red-500">
                         <i class="fas fa-exclamation-triangle text-3xl mb-4"></i>
-                        <p>Error connecting to backend. Please check the URL configuration.</p>
+                        <p>Error connecting to backend.</p>
+                        <p class="text-xs mt-2 text-slate-400">Ensure the Web App is deployed as 'Anyone' and the URL is correct.</p>
                     </div>`;
             }
         }
 
         function renderIssues() {
             const grid = document.getElementById('issues-grid');
+            if (allIssues.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-slate-500">No active policies found.</p>';
+                return;
+            }
+
             grid.innerHTML = allIssues.map(issue => `
                 <div class="issue-card glass rounded-3xl p-6 flex flex-col h-full border border-slate-200 dark:border-slate-800">
                     <div class="mb-4">
@@ -162,11 +175,10 @@
             };
 
             try {
-                // Using NO-CORS mode if you have issues, 
-                // but standard redirect handling is usually better with text/plain
-                const res = await fetch(SCRIPT_URL, {
+                // Using 'no-cors' for POST ensures the redirect doesn't trigger a browser security error
+                await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Essential for Google Apps Script redirects
+                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(voteData)
                 });
@@ -174,7 +186,7 @@
                 showToast("Vote recorded anonymously!");
             } catch (err) {
                 console.error("Submission failed:", err);
-                showToast("Submission sent! (Redirecting)", "info");
+                showToast("Error recording vote.", "error");
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
