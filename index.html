@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourViews | Public Policy Voting Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' }, 
+                        sentiment: {
+                            strAgree: '#16a34a', agree: '#4ade80', neutral: '#94a3b8', disagree: '#fb923c', strDisagree: '#ef4444'
+                        }
+                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { transition: background-color 0.3s ease; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .sentiment-btn.selected { border-color: #16a34a; background-color: #f0fdf4; }
+        .dark .sentiment-btn.selected { background-color: #14532d; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .dark .glass { background: rgba(15, 23, 42, 0.7); }
+        .loader { width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: #16a34a; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+
+    <nav class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="toggleView('home')">
+                    <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-bullhorn text-white text-sm"></i>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight">YourViews<span class="text-brand-600 italic">PRO</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-110 transition-all">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                    <button id="lang-toggle" onclick="toggleLanguage()" class="text-[10px] font-black bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full uppercase">English</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <header class="text-center space-y-4 max-w-3xl mx-auto py-12">
+            <h1 class="text-5xl sm:text-7xl font-black tracking-tighter leading-none">The Pulse of <span class="text-brand-600">The People.</span></h1>
+            <p id="hero-sub" class="text-slate-500 dark:text-slate-400 text-lg sm:text-xl">Express exactly how you feel about proposed local policies in your community.</p>
+            <div class="pt-8 flex justify-center gap-4">
+                <button onclick="openSuggestModal()" class="px-8 py-4 bg-brand-600 text-white rounded-2xl font-bold shadow-xl shadow-brand-500/20 hover:-translate-y-1 transition-all">
+                    Submit Proposal
+                </button>
+            </div>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-4 mb-10 bg-white dark:bg-slate-900 p-3 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="relative flex-1">
+                <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="search-input" onkeyup="renderIssues()" placeholder="Search policies..." class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none border-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <select id="cat-filter" onchange="setCategory(this.value)" class="bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-2xl text-sm font-bold border-none outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+                <option value="All">All Categories</option>
+            </select>
+        </div>
+
+        <div id="loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
+            <span class="loader"></span>
+            <p class="text-slate-400 font-medium">Fetching community views...</p>
+        </div>
+
+        <div id="issue-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20 hidden">
+            <!-- Dynamically Loaded -->
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md opacity-0 pointer-events-none transition-all flex items-center justify-center p-4">
+        <div id="modal-container" class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden translate-y-10 transition-all">
+            <div class="p-8 sm:p-10">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-3xl font-black" id="modal-title">Action</h3>
+                        <p class="text-slate-500 mt-1" id="modal-subtitle">Details</p>
+                    </div>
+                    <button onclick="closeModal()" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 transition-all">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="modal-body" class="max-h-[60vh] overflow-y-auto pr-2 no-scrollbar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2"></div>
+
+    <script>
+        // !! UPDATE THIS URL WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL !!
+        const API_URL = "https://script.google.com/macros/s/AKfycbyAynCmW51ACmrREk4CDm5non6JkTjnOG2NybPAzzzoh-b112THtJt4gFnDI6wBSjGhiA/exec";
+        
+        
+        let allIssues = [];
+        let currentFilter = 'All';
+        let currentLang = 'EN';
+        let selectedIssue = null;
+        let activeSentiment = null;
+
+        const translations = {
+            'EN': { hero: "Express exactly how you feel about proposed local policies in your community.", propose: "Submit Proposal", search: "Search policies...", vote: "Express Opinion", voted: "Feedback Recorded", results: "Community Sentiment" },
+            'NG': { hero: "Talk your mind on wetin government wan do for your area.", propose: "Suggest Idea", search: "Find matter...", vote: "Talk Your Own", voted: "We don hear you", results: "Wetin People Talk" }
+        };
+
+        window.onload = function() {
+            initFingerprint();
+            initData();
+            initTheme();
+        };
+
+        function getFingerprint() {
+            let fp = localStorage.getItem('yv_fingerprint');
+            if (!fp) {
+                fp = 'yv-' + Math.random().toString(36).substr(2, 9) + Date.now();
+                localStorage.setItem('yv_fingerprint', fp);
+            }
+            return fp;
+        }
+
+        async function initData() {
+            try {
+                const response = await fetch(`${API_URL}?action=getIssues`);
+                const data = await response.json();
+                allIssues = data;
+                populateCategories();
+                renderIssues();
+                document.getElementById('loading-state').classList.add('hidden');
+                document.getElementById('issue-grid').classList.remove('hidden');
+            } catch (err) {
+                console.error("Fetch error:", err);
+                showToast("Connection error. Using offline cache.", "error");
+                // Fallback for demo if API not yet configured
+                allIssues = [
+                    {id: 1, title: "LGA Solar Lighting Project", description: "Installing solar-powered streetlights in major markets to boost evening trade safety.", category: "Infrastructure", status: "active", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100}
+                ];
+                renderIssues();
+                document.getElementById('loading-state').classList.add('hidden');
+                document.getElementById('issue-grid').classList.remove('hidden');
+            }
+        }
+
+        function renderIssues() {
+            const grid = document.getElementById('issue-grid');
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allIssues.filter(i => (currentFilter === 'All' || i.category === currentFilter) && (i.title.toLowerCase().includes(searchVal) || i.description.toLowerCase().includes(searchVal)));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No policies matching your criteria.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(issue => {
+                const fp = getFingerprint();
+                const voted = localStorage.getItem(`voted_${issue.id}_${fp}`);
+                const getW = (v) => issue.totalVotes > 0 ? (v / issue.totalVotes) * 100 : 0;
+                
+                return `
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm relative group hover:shadow-xl transition-all fade-in">
+                    <span class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500 uppercase tracking-widest">${issue.category}</span>
+                    <h4 class="text-xl font-bold mt-4 mb-2 group-hover:text-brand-600 transition-colors">${issue.title}</h4>
+                    <p class="text-sm text-slate-500 mb-6 line-clamp-3 leading-relaxed">${issue.description}</p>
+                    
+                    <div class="space-y-2 mb-8 cursor-pointer" onclick="showInsights(${issue.id})">
+                        <div class="flex justify-between text-[10px] font-bold text-slate-400">
+                            <span>${translations[currentLang].results}</span>
+                            <span>${issue.totalVotes} VIEWS <i class="fas fa-chart-simple ml-1"></i></span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full flex overflow-hidden">
+                            <div style="width:${getW(issue.results.stronglyAgree)}%" class="bg-sentiment-strAgree"></div>
+                            <div style="width:${getW(issue.results.agree)}%" class="bg-sentiment-agree"></div>
+                            <div style="width:${getW(issue.results.neutral)}%" class="bg-sentiment-neutral"></div>
+                            <div style="width:${getW(issue.results.disagree)}%" class="bg-sentiment-disagree"></div>
+                            <div style="width:${getW(issue.results.stronglyDisagree)}%" class="bg-sentiment-strDisagree"></div>
+                        </div>
+                    </div>
+
+                    ${voted ? 
+                        `<button disabled class="w-full py-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 font-bold flex items-center justify-center gap-2">
+                            <i class="fas fa-check-circle"></i> ${translations[currentLang].voted}
+                        </button>` : 
+                        `<button onclick="openSentimentModal(${issue.id})" class="w-full py-4 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow-lg shadow-brand-500/10 active:scale-95">
+                            ${translations[currentLang].vote}
+                        </button>`
+                    }
+                </div>`;
+            }).join('');
+        }
+
+        function openSentimentModal(id) {
+            selectedIssue = allIssues.find(i => i.id == id);
+            activeSentiment = null;
+            document.getElementById('modal-title').innerText = translations[currentLang].vote;
+            document.getElementById('modal-subtitle').innerText = selectedIssue.title;
+            const body = document.getElementById('modal-body');
+            body.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 gap-3">
+                        ${['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'].map(s => `
+                            <button onclick="selectSentiment(this, '${s}')" class="sentiment-btn w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 text-left flex items-center justify-between border-2 border-transparent transition-all hover:border-slate-200">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-4 h-4 rounded-full bg-sentiment-${s.toLowerCase().replace(' ', '')}"></div>
+                                    <span class="font-bold text-base">${s}</span>
+                                </div>
+                                <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+                            </button>`).join('')}
+                    </div>
+                    
+                    <div class="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 space-y-4">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Demographics (Anonymous)</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <select id="d-age" class="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl text-sm font-bold outline-none border-none">
+                                <option value="">Age</option><option>18-24</option><option>25-44</option><option>45-64</option><option>65+</option>
+                            </select>
+                            <select id="d-gender" class="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl text-sm font-bold outline-none border-none">
+                                <option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option>
+                            </select>
+                        </div>
+                        <textarea id="v-comment" placeholder="Optional comment..." class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl text-sm outline-none border-none min-h-[100px]"></textarea>
+                        <button id="submit-vote-btn" onclick="submitVote()" class="w-full py-5 bg-slate-200 dark:bg-slate-800 text-slate-400 font-bold rounded-2xl cursor-not-allowed transition-all">Select Sentiment First</button>
+                    </div>
+                </div>`;
+            showModal();
+        }
+
+        function selectSentiment(el, val) {
+            document.querySelectorAll('.sentiment-btn').forEach(b => b.classList.remove('selected', 'border-brand-600'));
+            el.classList.add('selected', 'border-brand-600');
+            activeSentiment = val;
+            const btn = document.getElementById('submit-vote-btn');
+            btn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+            btn.classList.add('bg-brand-600', 'text-white', 'cursor-pointer', 'hover:bg-brand-700');
+            btn.innerText = "Submit My View";
+        }
+
+        async function submitVote() {
+            if (!activeSentiment) return;
+            const btn = document.getElementById('submit-vote-btn');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Processing...`;
+
+            const payload = {
+                action: 'castVote',
+                issueId: selectedIssue.id,
+                sentiment: activeSentiment,
+                fingerprint: getFingerprint(),
+                comment: document.getElementById('v-comment').value,
+                demographics: {
+                    age: document.getElementById('d-age').value || "N/A",
+                    gender: document.getElementById('d-gender').value || "N/A"
+                }
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    localStorage.setItem(`voted_${selectedIssue.id}_${getFingerprint()}`, 'true');
+                    showToast("Your view has been recorded!");
+                    closeModal();
+                    initData(); // Refresh counts
+                } else {
+                    showToast(result.error || "Submission failed", "error");
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                }
+            } catch (err) {
+                showToast("Network error. Try again later.", "error");
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        }
+
+        function showModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-container');
+            overlay.classList.remove('pointer-events-none', 'opacity-0');
+            container.classList.remove('translate-y-10');
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-container');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            container.classList.add('translate-y-10');
+        }
+
+        function showToast(msg, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `px-8 py-4 rounded-2xl shadow-2xl text-white font-bold flex items-center gap-3 fade-in ${type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 500); }, 4000);
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function populateCategories() {
+            const select = document.getElementById('cat-filter');
+            const cats = [...new Set(allIssues.map(i => i.category))];
+            select.innerHTML = '<option value="All">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function setCategory(val) { currentFilter = val; renderIssues(); }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'NG' : 'EN';
+            document.getElementById('lang-toggle').innerText = currentLang === 'EN' ? 'English' : 'Pidgin';
+            document.getElementById('hero-sub').innerText = translations[currentLang].hero;
+            renderIssues();
+        }
+
+        function initTheme() {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                toggleDarkMode();
+            }
+        }
+
+        function initFingerprint() { getFingerprint(); }
+    </script>
+</body>
+</html>
