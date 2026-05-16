@@ -200,6 +200,7 @@
         // ⚠️ IMPORTANT: Replace this URL with your Google Apps Script Web App URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby05rHr2m7A2dHoKVAs0kx3Z3Y7XoAU1b61DTtjKWLwkp70w8w6R5hwHA63UyvU1yDMdA/exec';
         
+        
         let allIssues = [];
         let currentFilter = 'All';
         let currentLang = 'EN';
@@ -257,19 +258,16 @@
             document.getElementById('modal-container').classList.add('translate-y-10'); 
         }
 
-        // ============ API CALLS with CORS handling ============
+        // ============ API CALLS ============
         async function fetchIssues() {
             isLoading = true;
             document.getElementById('issue-grid').innerHTML = '<div class="col-span-full flex justify-center py-20"><div class="loading-spinner"></div></div>';
             
             try {
-                // Using JSONP-style approach with mode: 'no-cors' won't work, so we use cors with proper headers
                 const response = await fetch(`${SCRIPT_URL}?action=getIssues`, {
                     method: 'GET',
                     mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json',
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
                 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -292,10 +290,9 @@
 
         function getDemoIssues() {
             return [
-                {id: 1, title: "LGA Solar Lighting Project", description: "Installing solar-powered streetlights in major markets to boost evening trade safety.", category: "Infrastructure", status: "active", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100},
-                {id: 2, title: "Market Tax Harmonization", description: "Combining all local government daily tickets into one single digital payment to prevent double taxation.", category: "Economy", status: "active", results: {stronglyAgree: 60, agree: 30, neutral: 5, disagree: 3, stronglyDisagree: 2}, totalVotes: 100},
-                {id: 3, title: "Youth Tech Hub Center", description: "Converting the old LGA library into a free high-speed internet coding center for graduates.", category: "Education", status: "active", results: {stronglyAgree: 45, agree: 40, neutral: 10, disagree: 5, stronglyDisagree: 0}, totalVotes: 100},
-                {id: 4, title: "Waste Management Initiative", description: "Community recycling program with monthly collection schedules.", category: "Environment", status: "active", results: {stronglyAgree: 70, agree: 20, neutral: 8, disagree: 2, stronglyDisagree: 0}, totalVotes: 100}
+                {id: 1, title: "Renewable Energy Tax Credit", description: "Increase subsidies for household solar panels and battery storage by 15% for lower-income housing.", category: "Environment", status: "active", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100},
+                {id: 2, title: "Universal Pre-K Initiative", description: "Free universal pre-kindergarten for all 4-year-olds in the district.", category: "Education", status: "active", results: {stronglyAgree: 60, agree: 30, neutral: 5, disagree: 3, stronglyDisagree: 2}, totalVotes: 100},
+                {id: 3, title: "Small Business Grant Program", description: "$10,000 grants for local small businesses affected by economic changes.", category: "Economy", status: "active", results: {stronglyAgree: 45, agree: 40, neutral: 10, disagree: 5, stronglyDisagree: 0}, totalVotes: 100}
             ];
         }
 
@@ -311,10 +308,10 @@
                     body: JSON.stringify({ action: 'castVote', ...voteData })
                 });
                 const result = await response.json();
+                console.log("Vote response:", result);
                 return result;
             } catch (error) {
                 console.warn("Vote submission failed, using demo mode:", error);
-                // Demo mode - simulate successful vote
                 return { success: true, demo: true };
             }
         }
@@ -330,7 +327,9 @@
                     },
                     body: JSON.stringify({ action: 'submitSuggestion', ...data })
                 });
-                return await response.json();
+                const result = await response.json();
+                console.log("Suggestion response:", result);
+                return result;
             } catch (error) {
                 console.warn("Suggestion failed, using demo mode:", error);
                 return { success: true, demo: true };
@@ -344,7 +343,9 @@
                     mode: 'cors',
                     headers: { 'Accept': 'application/json' }
                 });
-                return await response.json();
+                const data = await response.json();
+                console.log("Insights response:", data);
+                return data;
             } catch (error) {
                 console.warn("Insights fetch failed:", error);
                 return { total: 124, ageGroups: {"18-24": 45, "25-44": 60, "45-64": 19}, gender: {"Male": 65, "Female": 59}, areas: {"Lagos": 80, "Abuja": 44} };
@@ -513,11 +514,11 @@
                         <div class="grid grid-cols-2 gap-3 mb-3">
                             <select id="d-age" class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs outline-none focus:ring-1 focus:ring-brand-500">
                                 <option value="">Age Group</option>
-                                <option>18-24</option><option>25-44</option><option>45-64</option><option>65+</option>
+                                <option>18-24</option><option>25-34</option><option>35-44</option><option>45-54</option><option>55-64</option><option>65+</option>
                             </select>
                             <select id="d-gender" class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs outline-none focus:ring-1 focus:ring-brand-500">
                                 <option value="">Gender</option>
-                                <option>Male</option><option>Female</option><option>Other</option>
+                                <option>M</option><option>F</option><option>Other</option><option>Prefer not to say</option>
                             </select>
                         </div>
                         <div class="grid grid-cols-1 gap-3 mb-3">
@@ -530,7 +531,7 @@
                             </select>
                             <select id="d-employment" class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs outline-none focus:ring-1 focus:ring-brand-500">
                                 <option value="">Employment</option>
-                                <option>Employed</option><option>Self-Employed</option><option>Unemployed</option><option>Student</option>
+                                <option>Employed</option><option>Self-Employed</option><option>Unemployed</option><option>Student</option><option>Retired</option>
                             </select>
                         </div>
                     </div>
@@ -573,6 +574,7 @@
                 }
             };
 
+            console.log("Submitting vote:", voteData);
             const result = await submitVote(voteData);
             
             if (result.success) {
@@ -614,7 +616,10 @@
             }
             
             const fingerprint = getFingerprint();
-            const result = await submitSuggestionToAPI({ type, email, content, fingerprint });
+            const suggestionData = { type, email, content, fingerprint };
+            console.log("Submitting suggestion:", suggestionData);
+            
+            const result = await submitSuggestionToAPI(suggestionData);
             
             if (result.success) {
                 showToast("Thank you! Your suggestion has been submitted.");
