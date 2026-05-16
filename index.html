@@ -7,7 +7,7 @@
     <!-- Favicon Fallback -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇳🇬</text></svg>">
     
-    <!-- Tailwind CDN with Configuration -->
+    <!-- Tailwind CDN - Optimized for Prototype -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -59,7 +59,7 @@
                     <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-110 transition-all">
                         <i id="theme-icon" class="fas fa-moon"></i>
                     </button>
-                    <button id="lang-toggle" onclick="toggleLanguage()" class="text-[10px] bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full font-black uppercase tracking-tighter">English</button>
+                    <button id="lang-toggle" onclick="toggleLanguage()" class="text-[10px] bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full font-black uppercase tracking-tighter text-slate-500">English</button>
                 </div>
             </div>
         </div>
@@ -158,8 +158,9 @@
     <div id="toast-container" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] pointer-events-none"></div>
 
     <script>
-        
+        // Update this URL if your deployment ID changes
         const API_URL = "https://script.google.com/macros/s/AKfycbxAHktT1vxCya9I-q0OOsDb-lMnal8-SxD7sjbkomEQVsuh5pNLf6O7FjE_ZzPUYWin9Q/exec";
+        
         
         let allIssues = [];
         let currentFilter = 'All';
@@ -177,25 +178,31 @@
             initData();
         };
 
+        /**
+         * Robust Data Fetching for Google Apps Script
+         * Handles CORS issues by defaulting to Demo Mode if the direct fetch is blocked
+         */
         async function initData() {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 6000); // 6 second timeout for live data
+            const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 second grace period
 
             try {
+                // We use 'follow' to handle Google's 302 redirects, 
+                // but if CORS is strictly blocked on the redirect, this will fail.
                 const response = await fetch(`${API_URL}?action=getIssues`, {
                     method: 'GET',
-                    signal: controller.signal
+                    headers: { 'Accept': 'application/json' }
                 });
                 
                 clearTimeout(timeoutId);
                 
-                if (!response.ok) throw new Error("Network Response Not OK");
+                if (!response.ok) throw new Error("Connection Refused");
                 
                 const data = await response.json();
                 allIssues = data;
                 finalizeLoad();
             } catch (err) {
-                console.warn("Falling back to Demo Mode due to CORS/Network error:", err);
+                console.error("Data connection failed. Entering Demo Mode.", err);
                 loadDemoData();
             }
         }
@@ -203,8 +210,9 @@
         function loadDemoData() {
             document.getElementById('demo-badge').classList.remove('hidden');
             allIssues = [
-                {id: 1, title: "LGA Solar Lighting Project", description: "Installing solar-powered streetlights in major markets.", category: "Infrastructure", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100},
-                {id: 2, title: "Market Tax Harmonization", description: "Combining daily tickets into one digital payment.", category: "Economy", results: {stronglyAgree: 60, agree: 30, neutral: 5, disagree: 3, stronglyDisagree: 2}, totalVotes: 100}
+                {id: 1, title: "LGA Solar Lighting Project", description: "Installing solar-powered streetlights in major markets to boost night-time economy.", category: "Infrastructure", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100},
+                {id: 2, title: "Market Tax Harmonization", description: "Combining daily tickets into one digital payment system for stall owners.", category: "Economy", results: {stronglyAgree: 60, agree: 30, neutral: 5, disagree: 3, stronglyDisagree: 2}, totalVotes: 100},
+                {id: 3, title: "Public Park Renovation", description: "Converting unused land into a community recreation center with free Wi-Fi.", category: "Social", results: {stronglyAgree: 40, agree: 40, neutral: 10, disagree: 5, stronglyDisagree: 5}, totalVotes: 100}
             ];
             finalizeLoad();
         }
@@ -225,10 +233,13 @@
         function renderIssues() {
             const grid = document.getElementById('issue-grid');
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const filtered = allIssues.filter(i => (currentFilter === 'All' || i.category === currentFilter) && (i.title.toLowerCase().includes(searchVal) || i.description.toLowerCase().includes(searchVal)));
+            const filtered = allIssues.filter(i => 
+                (currentFilter === 'All' || i.category === currentFilter) && 
+                (i.title.toLowerCase().includes(searchVal) || i.description.toLowerCase().includes(searchVal))
+            );
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No active policies found.</div>`;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No matching policies found.</div>`;
                 return;
             }
 
@@ -250,13 +261,14 @@
                             <div style="width:${getW(issue.results.stronglyDisagree)}%" class="bg-sentiment-strDisagree"></div>
                         </div>
 
-                        ${voted ? `<button disabled class="w-full py-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 font-bold"><i class="fas fa-check-circle"></i> Voted</button>` :
+                        ${voted ? `<button disabled class="w-full py-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 font-bold"><i class="fas fa-check-circle mr-2"></i> Feedback Shared</button>` :
                         `<button onclick="openSentimentModal(${issue.id})" class="w-full py-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-colors">${translations[currentLang].vote}</button>`}
                     </div>`;
             }).join('');
         }
 
-        // REQUIRED FUNCTIONS DEFINED IN GLOBAL SCOPE
+        // --- INTERACTIVE FUNCTIONS ---
+
         window.openSentimentModal = function(id) {
             selectedIssue = allIssues.find(i => i.id == id);
             document.getElementById('modal-title').innerText = translations[currentLang].vote;
@@ -271,72 +283,125 @@
                                 <span class="font-bold text-sm">${s}</span>
                             </button>`).join('')}
                     </div>
-                    <button onclick="submitVote()" id="v-btn" class="w-full py-5 bg-slate-200 dark:bg-slate-800 text-slate-400 font-black rounded-2xl cursor-not-allowed">Select Option</button>
+                    <button onclick="submitVote()" id="v-btn" class="w-full py-5 bg-slate-200 dark:bg-slate-800 text-slate-400 font-black rounded-2xl cursor-not-allowed">Select an Option</button>
                 </div>`;
             showModal();
         };
 
         window.openSuggestModal = function() {
             document.getElementById('modal-title').innerText = translations[currentLang].propose;
-            document.getElementById('modal-subtitle').innerText = "Submit your ideas for local policy discussions.";
+            document.getElementById('modal-subtitle').innerText = "Suggest a local policy for community discussion.";
             const body = document.getElementById('modal-body');
             body.innerHTML = `
                 <div class="space-y-4">
-                    <textarea id="p-text" rows="5" placeholder="Tell us what matters..." class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl outline-none"></textarea>
-                    <button onclick="sendSuggestion()" id="p-btn" class="w-full py-4 bg-brand-600 text-white font-bold rounded-xl">Submit Proposal</button>
+                    <input type="text" id="p-title" placeholder="Short Title" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl outline-none border-none">
+                    <textarea id="p-text" rows="5" placeholder="Describe the policy or issue..." class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl outline-none border-none"></textarea>
+                    <button onclick="sendSuggestion()" id="p-btn" class="w-full py-4 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-600/20">Submit Proposal</button>
                 </div>`;
             showModal();
         };
 
         window.selectSentiment = function(el, val) {
-            document.querySelectorAll('.sentiment-btn').forEach(b => b.classList.remove('selected', 'bg-brand-50', 'ring-2', 'ring-brand-600'));
+            document.querySelectorAll('.sentiment-btn').forEach(b => {
+                b.classList.remove('selected', 'bg-brand-50', 'ring-2', 'ring-brand-600');
+            });
             el.classList.add('selected', 'bg-brand-50', 'ring-2', 'ring-brand-600');
             activeSentiment = val;
             const btn = document.getElementById('v-btn');
             btn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
             btn.classList.add('bg-brand-600', 'text-white');
-            btn.innerText = "Submit My View";
+            btn.innerText = "Cast My Vote";
         };
 
         window.submitVote = async function() {
             if (!activeSentiment) return;
             const btn = document.getElementById('v-btn');
             btn.disabled = true;
-            btn.innerText = "Sending...";
+            btn.innerText = "Connecting...";
 
             try {
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'castVote', issueId: selectedIssue.id, sentiment: activeSentiment }) });
+                // Using no-cors because Apps Script POST redirects don't support CORS response headers
+                await fetch(API_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify({ 
+                        action: 'castVote', 
+                        issueId: selectedIssue.id, 
+                        sentiment: activeSentiment 
+                    }) 
+                });
+                
                 localStorage.setItem(`voted_${selectedIssue.id}`, 'true');
-                showToast("Feedback submitted!");
+                showToast("Feedback submitted successfully!");
                 closeModal();
                 setTimeout(() => location.reload(), 1500);
             } catch (err) {
-                showToast("Error sending data", "error");
+                showToast("Connection error, please try again.", "error");
                 btn.disabled = false;
             }
         };
 
         window.sendSuggestion = function() {
-            showToast("Proposal sent to moderators!");
+            const title = document.getElementById('p-title').value;
+            if(!title) return showToast("Please add a title", "error");
+            showToast("Your proposal is being reviewed!");
             closeModal();
         };
+
+        // --- UTILITY FUNCTIONS ---
 
         function showToast(msg, type = "success") {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `mb-4 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold fade-in ${type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`;
-            toast.innerText = msg;
+            toast.className = `mb-4 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold fade-in border-l-4 ${type === 'success' ? 'bg-emerald-600 border-emerald-400' : 'bg-red-600 border-red-400'}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i> ${msg}`;
             container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
         }
 
-        function showModal() { document.getElementById('modal-overlay').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('modal-container').classList.remove('translate-y-10'); }
-        function closeModal() { document.getElementById('modal-overlay').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('modal-container').classList.add('translate-y-10'); }
-        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
-        function initTheme() { if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark'); }
-        function toggleLanguage() { currentLang = currentLang === 'EN' ? 'NG' : 'EN'; document.getElementById('lang-toggle').innerText = currentLang === 'EN' ? 'English' : 'Pidgin'; renderIssues(); }
-        function toggleView(v) { document.getElementById('home-view').classList.toggle('hidden', v !== 'home'); document.getElementById('about-view').classList.toggle('hidden', v !== 'about'); }
-        function setCategory(v) { currentFilter = v; renderIssues(); }
+        function showModal() { 
+            document.getElementById('modal-overlay').classList.remove('opacity-0', 'pointer-events-none'); 
+            document.getElementById('modal-container').classList.remove('translate-y-10'); 
+        }
+        
+        function closeModal() { 
+            document.getElementById('modal-overlay').classList.add('opacity-0', 'pointer-events-none'); 
+            document.getElementById('modal-container').classList.add('translate-y-10'); 
+            activeSentiment = null;
+        }
+
+        function toggleDarkMode() { 
+            const isDark = document.documentElement.classList.toggle('dark'); 
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function initTheme() { 
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').className = 'fas fa-sun';
+            }
+        }
+
+        function toggleLanguage() { 
+            currentLang = currentLang === 'EN' ? 'NG' : 'EN'; 
+            document.getElementById('lang-toggle').innerText = currentLang === 'EN' ? 'English' : 'Pidgin'; 
+            document.getElementById('hero-sub').innerText = translations[currentLang].hero;
+            renderIssues(); 
+        }
+
+        function toggleView(v) { 
+            document.getElementById('home-view').classList.toggle('hidden', v !== 'home'); 
+            document.getElementById('about-view').classList.toggle('hidden', v !== 'about'); 
+            window.scrollTo(0,0);
+        }
+
+        function setCategory(v) { 
+            currentFilter = v; 
+            renderIssues(); 
+        }
     </script>
 </body>
 </html>
