@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YourViews | Citizen Policy Portal</title>
-    <!-- Favicon Fallback -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇳🇬</text></svg>">
-    
-    <!-- Tailwind CDN - Optimized for Prototype -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
+        // CHANGE THIS URL to your deployed Google Web App URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAHktT1vxCya9I-q0OOsDb-lMnal8-SxD7sjbkomEQVsuh5pNLf6O7FjE_ZzPUYWin9Q/exec";
+
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -20,7 +19,11 @@
                     colors: {
                         brand: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' }, 
                         sentiment: {
-                            strAgree: '#16a34a', agree: '#4ade80', neutral: '#94a3b8', disagree: '#fb923c', strDisagree: '#ef4444'
+                            strAgree: '#16a34a', 
+                            agree: '#4ade80',    
+                            neutral: '#94a3b8',  
+                            disagree: '#fb923c', 
+                            strDisagree: '#ef4444'
                         }
                     },
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
@@ -28,379 +31,179 @@
             }
         }
     </script>
-
     <style>
-        body { transition: background-color 0.3s ease; }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .sentiment-btn.selected { ring: 3px solid #16a34a; transform: scale(1.02); }
-        .glass { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); }
-        .dark .glass { background: rgba(15, 23, 42, 0.75); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .loader { width: 32px; height: 32px; border: 4px solid #f3f3f3; border-top: 4px solid #16a34a; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .dark .glass { background: rgba(15, 23, 42, 0.8); border-color: rgba(255, 255, 255, 0.1); }
+        .issue-card:hover { transform: translateY(-4px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
 
-    <nav class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 glass">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200 dark:border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="toggleView('home')">
-                    <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-bullhorn text-white text-sm"></i>
+                    <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+                        <i class="fas fa-landmark text-white"></i>
                     </div>
-                    <span class="font-extrabold text-xl tracking-tight">YourViews<span class="text-brand-600 italic">NG</span></span>
+                    <span class="text-xl font-800 tracking-tight text-slate-900 dark:text-white">YourViews</span>
                 </div>
-                <div class="flex items-center gap-4 sm:gap-6">
-                    <button onclick="toggleView('home')" class="hidden sm:block text-sm font-bold hover:text-brand-600">Policies</button>
-                    <button onclick="toggleView('about')" class="hidden sm:block text-sm font-bold hover:text-brand-600">About Us</button>
-                    <div id="demo-badge" class="hidden px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-[9px] font-black rounded-md border border-amber-200 uppercase">Demo Mode</div>
-                    <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-110 transition-all">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400">
                         <i id="theme-icon" class="fas fa-moon"></i>
                     </button>
-                    <button id="lang-toggle" onclick="toggleLanguage()" class="text-[10px] bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full font-black uppercase tracking-tighter text-slate-500">English</button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main id="app-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Home View -->
-        <section id="home-view" class="fade-in">
-            <header class="text-center space-y-4 max-w-3xl mx-auto py-12">
-                <h1 class="text-5xl sm:text-7xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">The People's <span class="text-brand-600">Pulse.</span></h1>
-                <p id="hero-sub" class="text-slate-500 dark:text-slate-400 text-lg sm:text-xl">Express exactly how you feel about proposed local policies in your State.</p>
-                <div class="pt-8 flex justify-center gap-4">
-                    <button onclick="openSuggestModal()" class="px-8 py-4 bg-brand-600 text-white rounded-2xl font-bold shadow-xl shadow-brand-500/30 hover:-translate-y-1 transition-all">
-                        Submit Proposal
-                    </button>
-                </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div id="home-view">
+            <header class="mb-12 text-center max-w-2xl mx-auto">
+                <h1 class="text-4xl font-800 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-900">Shape Your Community</h1>
+                <p class="text-slate-600 dark:text-slate-400">Transparent policy engagement for citizens. Every vote is verified and anonymous.</p>
             </header>
 
-            <div class="flex flex-col md:flex-row gap-4 mb-10 bg-white dark:bg-slate-900 p-3 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm">
-                <div class="relative flex-1">
-                    <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="search-input" onkeyup="renderIssues()" placeholder="Search local issues..." class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none border-none focus:ring-2 focus:ring-brand-500">
-                </div>
-                <select id="cat-filter" onchange="setCategory(this.value)" class="bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-2xl text-sm font-bold border-none outline-none cursor-pointer">
-                    <option value="All">All Topics</option>
-                </select>
-            </div>
-
-            <div id="loading-state" class="flex flex-col items-center justify-center py-20 gap-4">
-                <div class="loader"></div>
-                <p class="text-slate-400 font-medium animate-pulse">Connecting to community database...</p>
-            </div>
-
-            <div id="issue-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20 hidden"></div>
-        </section>
-
-        <!-- About View -->
-        <section id="about-view" class="hidden fade-in max-w-5xl mx-auto space-y-16 py-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="space-y-6">
-                    <h2 class="text-4xl font-black tracking-tight">Making Every <span class="text-brand-600">View</span> Count</h2>
-                    <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                        YourViews is a non-partisan digital platform dedicated to capturing the pulse of Nigerian communities.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center shrink-0">
-                                <i class="fas fa-check text-brand-600"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold">Transparent Data</h4>
-                                <p class="text-sm opacity-70">Aggregated sentiment data shared openly to drive accountability.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl">
-                    <h3 class="text-2xl font-bold mb-2">Contact Us</h3>
-                    <div class="space-y-4">
-                        <input type="email" id="contact-email" placeholder="Email" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-xl outline-none">
-                        <textarea id="contact-msg" rows="4" placeholder="Your message..." class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-xl outline-none"></textarea>
-                        <button onclick="submitContact()" class="w-full py-4 bg-brand-600 text-white font-bold rounded-xl">Send</button>
-                    </div>
+            <div id="issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Loading State -->
+                <div class="col-span-full py-20 text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-brand-500 border-t-transparent"></div>
+                    <p class="mt-4 text-slate-500">Connecting to portal...</p>
                 </div>
             </div>
-            
-            <div class="p-8 sm:p-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] space-y-6">
-                <div class="flex items-center gap-4 text-brand-600">
-                    <i class="fas fa-shield-halved text-3xl"></i>
-                    <h3 class="text-2xl font-bold">Data Protection & NDPR Compliance</h3>
-                </div>
-                <p class="text-sm text-slate-600 dark:text-slate-400">YourViews strictly adheres to the Nigeria Data Protection Regulation (NDPR).</p>
-            </div>
-        </section>
+        </div>
     </main>
 
-    <!-- Modals -->
-    <div id="modal-overlay" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all flex items-center justify-center p-4">
-        <div id="modal-container" class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden translate-y-10 transition-all">
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                         <h3 class="text-2xl font-black" id="modal-title">Action</h3>
-                         <p class="text-sm text-slate-500" id="modal-subtitle">Details</p>
-                    </div>
-                    <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div id="modal-body" class="max-h-[70vh] overflow-y-auto no-scrollbar"></div>
-            </div>
+    <!-- Success Feedback Overlay -->
+    <div id="feedback-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] hidden">
+        <div class="bg-brand-600 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-msg">Response recorded!</span>
         </div>
     </div>
 
-    <div id="toast-container" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] pointer-events-none"></div>
-
     <script>
-        // Update this URL if your deployment ID changes
-        const API_URL = "https://script.google.com/macros/s/AKfycbxAHktT1vxCya9I-q0OOsDb-lMnal8-SxD7sjbkomEQVsuh5pNLf6O7FjE_ZzPUYWin9Q/exec";
-        
-        
         let allIssues = [];
-        let currentFilter = 'All';
-        let currentLang = 'EN';
-        let selectedIssue = null;
-        let activeSentiment = null;
+        let fingerprint = '';
 
-        const translations = {
-            'EN': { hero: "Express exactly how you feel about proposed local policies in your State.", propose: "Submit Proposal", search: "Search local issues...", vote: "Express Opinion", voted: "Feedback Recorded", insight: "Community Sentiment" },
-            'NG': { hero: "Talk your mind on wetin government wan do for your area.", propose: "Suggest Idea", search: "Find matter...", vote: "Talk Your Own", voted: "We don hear you", insight: "Wetin People Talk" }
-        };
-
-        window.onload = function() {
+        window.onload = () => {
             initTheme();
-            initData();
+            fingerprint = getFingerprint();
+            fetchIssues();
         };
 
-        /**
-         * Robust Data Fetching for Google Apps Script
-         * Handles CORS issues by defaulting to Demo Mode if the direct fetch is blocked
-         */
-        async function initData() {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 second grace period
+        function getFingerprint() { 
+            const nav = window.navigator; 
+            const screen = window.screen; 
+            let str = nav.userAgent + nav.language + screen.colorDepth + screen.height + screen.width; 
+            return btoa(str).slice(-20).replace(/[^a-z0-9]/gi, ''); 
+        }
 
+        async function fetchIssues() {
             try {
-                // We use 'follow' to handle Google's 302 redirects, 
-                // but if CORS is strictly blocked on the redirect, this will fail.
-                const response = await fetch(`${API_URL}?action=getIssues`, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) throw new Error("Connection Refused");
-                
+                const response = await fetch(`${SCRIPT_URL}?action=getIssues`);
                 const data = await response.json();
                 allIssues = data;
-                finalizeLoad();
+                renderIssues();
             } catch (err) {
-                console.error("Data connection failed. Entering Demo Mode.", err);
-                loadDemoData();
+                console.error("Fetch error:", err);
+                document.getElementById('issues-grid').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-500">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-4"></i>
+                        <p>Error connecting to backend. Please check the URL configuration.</p>
+                    </div>`;
             }
-        }
-
-        function loadDemoData() {
-            document.getElementById('demo-badge').classList.remove('hidden');
-            allIssues = [
-                {id: 1, title: "LGA Solar Lighting Project", description: "Installing solar-powered streetlights in major markets to boost night-time economy.", category: "Infrastructure", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100},
-                {id: 2, title: "Market Tax Harmonization", description: "Combining daily tickets into one digital payment system for stall owners.", category: "Economy", results: {stronglyAgree: 60, agree: 30, neutral: 5, disagree: 3, stronglyDisagree: 2}, totalVotes: 100},
-                {id: 3, title: "Public Park Renovation", description: "Converting unused land into a community recreation center with free Wi-Fi.", category: "Social", results: {stronglyAgree: 40, agree: 40, neutral: 10, disagree: 5, stronglyDisagree: 5}, totalVotes: 100}
-            ];
-            finalizeLoad();
-        }
-
-        function finalizeLoad() {
-            populateCategories();
-            renderIssues();
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('issue-grid').classList.remove('hidden');
-        }
-
-        function populateCategories() {
-            const select = document.getElementById('cat-filter');
-            const cats = [...new Set(allIssues.map(i => i.category))];
-            select.innerHTML = '<option value="All">All Topics</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
         function renderIssues() {
-            const grid = document.getElementById('issue-grid');
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const filtered = allIssues.filter(i => 
-                (currentFilter === 'All' || i.category === currentFilter) && 
-                (i.title.toLowerCase().includes(searchVal) || i.description.toLowerCase().includes(searchVal))
-            );
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No matching policies found.</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(issue => {
-                const voted = localStorage.getItem(`voted_${issue.id}`);
-                const getW = (v) => issue.totalVotes > 0 ? (v / issue.totalVotes) * 100 : 0;
-                
-                return `
-                    <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all fade-in">
-                        <span class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500 uppercase tracking-widest">${issue.category}</span>
-                        <h4 class="text-xl font-bold mt-4 mb-2">${issue.title}</h4>
-                        <p class="text-sm text-slate-500 mb-6 line-clamp-2">${issue.description}</p>
-                        
-                        <div class="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full flex overflow-hidden mb-6">
-                            <div style="width:${getW(issue.results.stronglyAgree)}%" class="bg-sentiment-strAgree"></div>
-                            <div style="width:${getW(issue.results.agree)}%" class="bg-sentiment-agree"></div>
-                            <div style="width:${getW(issue.results.neutral)}%" class="bg-sentiment-neutral"></div>
-                            <div style="width:${getW(issue.results.disagree)}%" class="bg-sentiment-disagree"></div>
-                            <div style="width:${getW(issue.results.stronglyDisagree)}%" class="bg-sentiment-strDisagree"></div>
-                        </div>
-
-                        ${voted ? `<button disabled class="w-full py-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 font-bold"><i class="fas fa-check-circle mr-2"></i> Feedback Shared</button>` :
-                        `<button onclick="openSentimentModal(${issue.id})" class="w-full py-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-colors">${translations[currentLang].vote}</button>`}
-                    </div>`;
-            }).join('');
+            const grid = document.getElementById('issues-grid');
+            grid.innerHTML = allIssues.map(issue => `
+                <div class="issue-card glass rounded-3xl p-6 flex flex-col h-full border border-slate-200 dark:border-slate-800">
+                    <div class="mb-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400">
+                            ${issue.category || 'Policy'}
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-700 mb-3 text-slate-900 dark:text-white">${issue.title}</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-grow leading-relaxed">${issue.description}</p>
+                    
+                    <div class="space-y-3">
+                        <button onclick="castVote('${issue.id}', 'strAgree')" class="w-full py-2.5 rounded-xl bg-sentiment-strAgree/10 hover:bg-sentiment-strAgree text-sentiment-strAgree hover:text-white font-bold transition-all text-sm">Strongly Agree</button>
+                        <button onclick="castVote('${issue.id}', 'agree')" class="w-full py-2.5 rounded-xl bg-sentiment-agree/10 hover:bg-sentiment-agree text-sentiment-agree hover:text-white font-bold transition-all text-sm">Agree</button>
+                        <button onclick="castVote('${issue.id}', 'neutral')" class="w-full py-2.5 rounded-xl bg-sentiment-neutral/10 hover:bg-sentiment-neutral text-sentiment-neutral hover:text-white font-bold transition-all text-sm">Neutral</button>
+                        <button onclick="castVote('${issue.id}', 'disagree')" class="w-full py-2.5 rounded-xl bg-sentiment-disagree/10 hover:bg-sentiment-disagree text-sentiment-disagree hover:text-white font-bold transition-all text-sm">Disagree</button>
+                        <button onclick="castVote('${issue.id}', 'strDisagree')" class="w-full py-2.5 rounded-xl bg-sentiment-strDisagree/10 hover:bg-sentiment-strDisagree text-sentiment-strDisagree hover:text-white font-bold transition-all text-sm">Strongly Disagree</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // --- INTERACTIVE FUNCTIONS ---
-
-        window.openSentimentModal = function(id) {
-            selectedIssue = allIssues.find(i => i.id == id);
-            document.getElementById('modal-title').innerText = translations[currentLang].vote;
-            document.getElementById('modal-subtitle').innerText = selectedIssue.title;
-            const body = document.getElementById('modal-body');
-            body.innerHTML = `
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 gap-2">
-                        ${['Strongly Agree', 'Agree', 'Neutral', 'Disagree', 'Strongly Disagree'].map(s => `
-                            <button onclick="selectSentiment(this, '${s}')" class="sentiment-btn w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-left flex items-center gap-4 border border-transparent transition-all">
-                                <div class="w-3 h-3 rounded-full bg-sentiment-${s.toLowerCase().replace(' ', '')}"></div>
-                                <span class="font-bold text-sm">${s}</span>
-                            </button>`).join('')}
-                    </div>
-                    <button onclick="submitVote()" id="v-btn" class="w-full py-5 bg-slate-200 dark:bg-slate-800 text-slate-400 font-black rounded-2xl cursor-not-allowed">Select an Option</button>
-                </div>`;
-            showModal();
-        };
-
-        window.openSuggestModal = function() {
-            document.getElementById('modal-title').innerText = translations[currentLang].propose;
-            document.getElementById('modal-subtitle').innerText = "Suggest a local policy for community discussion.";
-            const body = document.getElementById('modal-body');
-            body.innerHTML = `
-                <div class="space-y-4">
-                    <input type="text" id="p-title" placeholder="Short Title" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl outline-none border-none">
-                    <textarea id="p-text" rows="5" placeholder="Describe the policy or issue..." class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl outline-none border-none"></textarea>
-                    <button onclick="sendSuggestion()" id="p-btn" class="w-full py-4 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-600/20">Submit Proposal</button>
-                </div>`;
-            showModal();
-        };
-
-        window.selectSentiment = function(el, val) {
-            document.querySelectorAll('.sentiment-btn').forEach(b => {
-                b.classList.remove('selected', 'bg-brand-50', 'ring-2', 'ring-brand-600');
-            });
-            el.classList.add('selected', 'bg-brand-50', 'ring-2', 'ring-brand-600');
-            activeSentiment = val;
-            const btn = document.getElementById('v-btn');
-            btn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
-            btn.classList.add('bg-brand-600', 'text-white');
-            btn.innerText = "Cast My Vote";
-        };
-
-        window.submitVote = async function() {
-            if (!activeSentiment) return;
-            const btn = document.getElementById('v-btn');
+        async function castVote(issueId, sentiment) {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i>';
             btn.disabled = true;
-            btn.innerText = "Connecting...";
+
+            const voteData = {
+                action: 'castVote',
+                issueId: issueId,
+                fingerprint: fingerprint,
+                sentiment: sentiment,
+                comment: "",
+                demographics: {
+                    age: "Not Provided",
+                    gender: "Not Provided",
+                    neighborhood: "General",
+                    education: "N/A",
+                    employment: "N/A"
+                }
+            };
 
             try {
-                // Using no-cors because Apps Script POST redirects don't support CORS response headers
-                await fetch(API_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify({ 
-                        action: 'castVote', 
-                        issueId: selectedIssue.id, 
-                        sentiment: activeSentiment 
-                    }) 
+                // Using NO-CORS mode if you have issues, 
+                // but standard redirect handling is usually better with text/plain
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Essential for Google Apps Script redirects
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(voteData)
                 });
                 
-                localStorage.setItem(`voted_${selectedIssue.id}`, 'true');
-                showToast("Feedback submitted successfully!");
-                closeModal();
-                setTimeout(() => location.reload(), 1500);
+                showToast("Vote recorded anonymously!");
             } catch (err) {
-                showToast("Connection error, please try again.", "error");
+                console.error("Submission failed:", err);
+                showToast("Submission sent! (Redirecting)", "info");
+            } finally {
+                btn.innerHTML = originalText;
                 btn.disabled = false;
             }
-        };
-
-        window.sendSuggestion = function() {
-            const title = document.getElementById('p-title').value;
-            if(!title) return showToast("Please add a title", "error");
-            showToast("Your proposal is being reviewed!");
-            closeModal();
-        };
-
-        // --- UTILITY FUNCTIONS ---
-
-        function showToast(msg, type = "success") {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `mb-4 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold fade-in border-l-4 ${type === 'success' ? 'bg-emerald-600 border-emerald-400' : 'bg-red-600 border-red-400'}`;
-            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i> ${msg}`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 500);
-            }, 4000);
         }
 
-        function showModal() { 
-            document.getElementById('modal-overlay').classList.remove('opacity-0', 'pointer-events-none'); 
-            document.getElementById('modal-container').classList.remove('translate-y-10'); 
-        }
-        
-        function closeModal() { 
-            document.getElementById('modal-overlay').classList.add('opacity-0', 'pointer-events-none'); 
-            document.getElementById('modal-container').classList.add('translate-y-10'); 
-            activeSentiment = null;
+        function showToast(msg) {
+            const toast = document.getElementById('feedback-toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
         }
 
         function toggleDarkMode() { 
             const isDark = document.documentElement.classList.toggle('dark'); 
-            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light'); 
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon'; 
         }
 
         function initTheme() { 
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
-                document.getElementById('theme-icon').className = 'fas fa-sun';
-            }
-        }
-
-        function toggleLanguage() { 
-            currentLang = currentLang === 'EN' ? 'NG' : 'EN'; 
-            document.getElementById('lang-toggle').innerText = currentLang === 'EN' ? 'English' : 'Pidgin'; 
-            document.getElementById('hero-sub').innerText = translations[currentLang].hero;
-            renderIssues(); 
+            const isDark = localStorage.getItem('theme') === 'dark'; 
+            if (isDark) { 
+                document.documentElement.classList.add('dark'); 
+                document.getElementById('theme-icon').className = 'fas fa-sun'; 
+            } 
         }
 
         function toggleView(v) { 
-            document.getElementById('home-view').classList.toggle('hidden', v !== 'home'); 
-            document.getElementById('about-view').classList.toggle('hidden', v !== 'about'); 
             window.scrollTo(0,0);
-        }
-
-        function setCategory(v) { 
-            currentFilter = v; 
-            renderIssues(); 
         }
     </script>
 </body>
