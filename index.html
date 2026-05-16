@@ -197,7 +197,7 @@
 
     <script>
         // ============ CONFIGURATION ============
-        // ⚠️ IMPORTANT: Replace this URL with your Google Apps Script Web App URL after deployment
+        // ⚠️ IMPORTANT: Replace this URL with your Google Apps Script Web App URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby05rHr2m7A2dHoKVAs0kx3Z3Y7XoAU1b61DTtjKWLwkp70w8w6R5hwHA63UyvU1yDMdA/exec';
         
         let allIssues = [];
@@ -257,13 +257,21 @@
             document.getElementById('modal-container').classList.add('translate-y-10'); 
         }
 
-        // ============ API CALLS ============
+        // ============ API CALLS with CORS handling ============
         async function fetchIssues() {
             isLoading = true;
             document.getElementById('issue-grid').innerHTML = '<div class="col-span-full flex justify-center py-20"><div class="loading-spinner"></div></div>';
             
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getIssues`);
+                // Using JSONP-style approach with mode: 'no-cors' won't work, so we use cors with proper headers
+                const response = await fetch(`${SCRIPT_URL}?action=getIssues`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 
@@ -274,7 +282,8 @@
                 
                 return Array.isArray(data) ? data : (data.issues || getDemoIssues());
             } catch (error) {
-                console.warn("Fetch failed, using demo data:", error);
+                console.warn("Fetch failed, using demo data:", error.message);
+                showToast("Using demo mode - backend not connected", "error");
                 return getDemoIssues();
             } finally {
                 isLoading = false;
@@ -285,7 +294,8 @@
             return [
                 {id: 1, title: "LGA Solar Lighting Project", description: "Installing solar-powered streetlights in major markets to boost evening trade safety.", category: "Infrastructure", status: "active", results: {stronglyAgree: 80, agree: 15, neutral: 5, disagree: 0, stronglyDisagree: 0}, totalVotes: 100},
                 {id: 2, title: "Market Tax Harmonization", description: "Combining all local government daily tickets into one single digital payment to prevent double taxation.", category: "Economy", status: "active", results: {stronglyAgree: 60, agree: 30, neutral: 5, disagree: 3, stronglyDisagree: 2}, totalVotes: 100},
-                {id: 3, title: "Youth Tech Hub Center", description: "Converting the old LGA library into a free high-speed internet coding center for graduates.", category: "Education", status: "active", results: {stronglyAgree: 45, agree: 40, neutral: 10, disagree: 5, stronglyDisagree: 0}, totalVotes: 100}
+                {id: 3, title: "Youth Tech Hub Center", description: "Converting the old LGA library into a free high-speed internet coding center for graduates.", category: "Education", status: "active", results: {stronglyAgree: 45, agree: 40, neutral: 10, disagree: 5, stronglyDisagree: 0}, totalVotes: 100},
+                {id: 4, title: "Waste Management Initiative", description: "Community recycling program with monthly collection schedules.", category: "Environment", status: "active", results: {stronglyAgree: 70, agree: 20, neutral: 8, disagree: 2, stronglyDisagree: 0}, totalVotes: 100}
             ];
         }
 
@@ -294,13 +304,17 @@
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({ action: 'castVote', ...voteData })
                 });
                 const result = await response.json();
                 return result;
             } catch (error) {
-                console.warn("Vote submission failed in demo mode:", error);
+                console.warn("Vote submission failed, using demo mode:", error);
+                // Demo mode - simulate successful vote
                 return { success: true, demo: true };
             }
         }
@@ -310,19 +324,26 @@
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({ action: 'submitSuggestion', ...data })
                 });
                 return await response.json();
             } catch (error) {
-                console.warn("Suggestion failed in demo mode:", error);
+                console.warn("Suggestion failed, using demo mode:", error);
                 return { success: true, demo: true };
             }
         }
 
         async function fetchInsights(issueId) {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getInsights&issueId=${issueId}`);
+                const response = await fetch(`${SCRIPT_URL}?action=getInsights&issueId=${issueId}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: { 'Accept': 'application/json' }
+                });
                 return await response.json();
             } catch (error) {
                 console.warn("Insights fetch failed:", error);
@@ -389,6 +410,7 @@
         }
 
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
@@ -421,7 +443,7 @@
                     <div class="space-y-3">
                         ${Object.entries(data.ageGroups).map(([group, count]) => `
                             <div class="space-y-1">
-                                <div class="flex justify-between text-[10px] font-bold uppercase"><span>${group}</span><span>${Math.round((count/total)*100)}%</span></div>
+                                <div class="flex justify-between text-[10px] font-bold uppercase"><span>${escapeHtml(group)}</span><span>${Math.round((count/total)*100)}%</span></div>
                                 <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-brand-500" style="width:${(count/total)*100}%"></div></div>
                             </div>`).join('')}
                     </div>
@@ -434,7 +456,7 @@
                     <div class="space-y-3">
                         ${Object.entries(data.gender).map(([gender, count]) => `
                             <div class="space-y-1">
-                                <div class="flex justify-between text-[10px] font-bold uppercase"><span>${gender}</span><span>${Math.round((count/total)*100)}%</span></div>
+                                <div class="flex justify-between text-[10px] font-bold uppercase"><span>${escapeHtml(gender)}</span><span>${Math.round((count/total)*100)}%</span></div>
                                 <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-brand-500" style="width:${(count/total)*100}%"></div></div>
                             </div>`).join('')}
                     </div>
@@ -447,7 +469,7 @@
                     <div class="space-y-3">
                         ${Object.entries(data.areas).slice(0, 5).map(([area, count]) => `
                             <div class="space-y-1">
-                                <div class="flex justify-between text-[10px] font-bold uppercase"><span>${area.substring(0, 20)}</span><span>${Math.round((count/total)*100)}%</span></div>
+                                <div class="flex justify-between text-[10px] font-bold uppercase"><span>${escapeHtml(area.substring(0, 20))}</span><span>${Math.round((count/total)*100)}%</span></div>
                                 <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-brand-500" style="width:${(count/total)*100}%"></div></div>
                             </div>`).join('')}
                     </div>
