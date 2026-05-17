@@ -95,7 +95,7 @@
                         <span data-i18n="hero1">Shape your city's</span> <span class="text-brand-600" data-i18n="hero2">Future.</span>
                     </h1>
                     <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed" data-i18n="heroSub">
-                        A transparent platform for citizens to voice their opinions on national and local polices and initiatives. Real data for real impact.
+                        A transparent platform for citizens to voice their opinions on local policy changes. Real data for real impact.
                     </p>
                     
                     <!-- Dynamically Generated Categories Wrapper -->
@@ -154,7 +154,7 @@
                         </div>
                         <h4 class="font-bold text-base mb-2" data-i18n="ourMission">Our Mission</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="missionDesc">
-                            Empowering citizens to participate actively in democratic review cycles. We aggregate diverse voices into quantitative data structures to aid community organisations and policy strategists.
+                            Empowering local citizens to participate actively in democratic municipal review cycles. We aggregate local voices into quantitative data structures to aid community organizations and policy strategists.
                         </p>
                     </div>
                     <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
@@ -163,7 +163,7 @@
                         </div>
                         <h4 class="font-bold text-base mb-2" data-i18n="howItWorks">How It Works</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="worksDesc">
-                            Policies and proposals are listed straight from national initiatives and direct public requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.
+                            Policies and proposals are listed straight from municipal councils and direct community requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.
                         </p>
                     </div>
                     <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
@@ -172,7 +172,7 @@
                         </div>
                         <h4 class="font-bold text-base mb-2" data-i18n="complianceTitle">Legal Compliance</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="complianceDesc">
-                            We preserve your structural rights to anonymised security. System designs strictly adhere to data protection regulations using temporary client tracking instead of gathering directly personal data.
+                            We preserve your structural rights to anonymized security. System designs strictly adhere to Nigeria Data Protection Regulations (NDPR) using temporary client tracking instead of gathering directly personal data.
                         </p>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                                 </p>
                                 <p class="flex items-center gap-3">
                                     <i class="fas fa-map-marker-alt text-brand-600 w-5"></i>
-                                    <span>YourViews Citizen Hub, Wuse, Abuja, Nigeria.</span>
+                                    <span>YourViews Citizen Hub, Yaba, Lagos, Nigeria.</span>
                                 </p>
                                 <p class="flex items-center gap-3">
                                     <i class="fas fa-clock text-brand-600 w-5"></i>
@@ -231,7 +231,7 @@
         <!-- Global Copyright Footer -->
         <footer class="mt-20 border-t border-slate-200 dark:border-slate-800 pt-8 text-center text-xs text-slate-400 dark:text-slate-500 space-y-2">
             <div>&copy; 2026 YourViews. All rights reserved.</div>
-            <div data-i18n="footerText" class="max-w-md mx-auto">Empowering communities through transparent public sentiment and policy research. Built in compliance with data protection regulations.</div>
+            <div data-i18n="footerText" class="max-w-md mx-auto">Empowering communities through transparent public sentiment and policy research. Built in compliance with NDPR rules.</div>
         </footer>
     </main>
 
@@ -246,98 +246,18 @@
                 <h2 id="modal-title" class="text-2xl font-800 mb-2 leading-tight">Issue Title</h2>
                 <p id="modal-desc" class="text-slate-500 dark:text-slate-400 mb-6 text-sm">Description.</p>
 
-                <!-- Dynamic Live Insights Progress-Bar View -->
+                <!-- Dynamic Live Insights Progress-Bar View Container -->
                 <div id="insights-charts-block" class="hidden space-y-4 mb-6 bg-slate-100/50 dark:bg-slate-900/40 p-5 rounded-3xl border border-slate-200/50 dark:border-slate-800/50">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1" data-i18n="liveBreakdown">Live Opinion Breakdown</h3>
                     
-                    <!-- Progress Bar Component Row: Strongly Agree -->
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-sentiment-strAgree" data-i18n="opt1">Strongly Agree</span>
-                            <span id="chart-val-stragree">0% (0 votes)</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div id="chart-bar-stragree" class="bg-sentiment-strAgree h-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Progress Bar Component Row: Agree -->
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-brand-500" data-i18n="opt2">Agree</span>
-                            <span id="chart-val-agree">0% (0 votes)</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div id="chart-bar-agree" class="bg-sentiment-agree h-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Progress Bar Component Row: Neutral -->
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-sentiment-neutral" data-i18n="opt3">Neutral</span>
-                            <span id="chart-val-neutral">0% (0 votes)</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div id="chart-bar-neutral" class="bg-sentiment-neutral h-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Progress Bar Component Row: Disagree -->
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-sentiment-disagree" data-i18n="opt4">Disagree</span>
-                            <span id="chart-val-disagree">0% (0 votes)</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div id="chart-bar-disagree" class="bg-sentiment-disagree h-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Progress Bar Component Row: Strongly Disagree -->
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-sentiment-strDisagree" data-i18n="opt5">Strongly Disagree</span>
-                            <span id="chart-val-strdisagree">0% (0 votes)</span>
-                        </div>
-                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                            <div id="chart-bar-strdisagree" class="bg-sentiment-strDisagree h-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
+                    <div id="insights-charts-container" class="space-y-4">
+                        <!-- Dynamic bar metrics append here -->
                     </div>
                 </div>
 
-                <!-- Input Selection list (Hidden when viewing insights only) -->
-                <div class="space-y-2 mb-6" id="sentiment-list">
-                    <button onclick="selectSentiment('Strongly Agree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
-                        <span class="font-bold" data-i18n="opt1">Strongly Agree</span>
-                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
-                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
-                        </div>
-                    </button>
-                    <button onclick="selectSentiment('Agree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
-                        <span class="font-bold" data-i18n="opt2">Agree</span>
-                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
-                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
-                        </div>
-                    </button>
-                    <button onclick="selectSentiment('Neutral')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
-                        <span class="font-bold" data-i18n="opt3">Neutral</span>
-                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
-                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
-                        </div>
-                    </button>
-                    <button onclick="selectSentiment('Disagree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
-                        <span class="font-bold" data-i18n="opt4">Disagree</span>
-                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
-                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
-                        </div>
-                    </button>
-                    <button onclick="selectSentiment('Strongly Disagree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
-                        <span class="font-bold" data-i18n="opt5">Strongly Disagree</span>
-                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
-                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
-                        </div>
-                    </button>
+                <!-- Input Selection list (Dynamically built based on question format) -->
+                <div class="space-y-2 mb-6 max-h-[40vh] overflow-y-auto pr-1" id="sentiment-list">
+                    <!-- Option buttons are dynamically injected here -->
                 </div>
                 
                 <textarea id="vote-comment" data-i18n-ph="commentPh" placeholder="Explain your perspective (optional)..." rows="2" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none mb-6"></textarea>
@@ -372,8 +292,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Location</label>
-                        <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Area" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Neighborhood</label>
+                        <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Downtown" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -439,29 +359,29 @@
         let currentFilter = 'All';
         let activeIssueId = null;
         let selectedSentimentValue = null;
+        let selectedSentimentIndex = null;
         let currentLang = 'en';
 
         const i18n = {
             en: {
-                navAbout: "About", navPropose: "Propose Topic", hero1: "Shape your community's", hero2: "Future.",
-                heroSub: "A transparent platform for citizens to voice their opinions on national and local policies and initiatives.",
+                navAbout: "About", navPropose: "Propose Topic", hero1: "Shape your city's", hero2: "Future.",
+                heroSub: "A transparent platform for citizens to voice their opinions on local policy changes.",
                 catAll: "All", catInfra: "Infrastructure", catEnv: "Environment", catSocial: "Social",
                 opt1: "Strongly Agree", opt2: "Agree", opt3: "Neutral", opt4: "Disagree", opt5: "Strongly Disagree",
                 continue: "Continue", skipBtn: "Skip & Submit", castVote: "Cast Vote", sendBtn: "Send Message",
-                commentPh: "Explain your perspective (optional)...", hoodPh: "e.g. Area", propPh: "Describe the policy issue...",
+                commentPh: "Explain your perspective (optional)...", hoodPh: "e.g. Downtown", propPh: "Describe the policy issue...",
                 demoTitle: "Almost Done!", demoSub: "Aggregated data helps us analyze patterns. No field is compulsory.",
-                ageLabel: "Age Group", genderLabel: "Gender", hoodLabel: "Location", select: "Select",
+                ageLabel: "Age Group", genderLabel: "Gender", hoodLabel: "Neighborhood", select: "Select",
                 eduLabel: "Education", empLabel: "Employment", closedText: "Voting Closed",
                 propTopic: "Propose Topic", submitBtn: "Submit Proposal", contactTitle: "Contact the Team",
                 legalTitle: "Data Privacy & Compliance", aboutText: "Connecting voices to policies.",
                 liveBreakdown: "Live Opinion Breakdown", backBtn: "Go Back to Voting Feed",
                 ourMission: "Our Mission", howItWorks: "How It Works", complianceTitle: "Legal Compliance",
-                missionDesc: "Empowering citizens to participate actively in democratic review cycles. We aggregate diverse voices into quantitative data structures to aid community organisations and policy strategists.",
-                worksDesc: "Policies and proposals are listed straight from national initiatives and direct public requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.",
-                complianceDesc: "We preserve your structural rights to anonymised security. System designs strictly adhere to data protection regulations using temporary client tracking instead of gathering directly personal data.",
-                hubTitle: "Contact Information", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with data protection regulations."
+                missionDesc: "Empowering local citizens to participate actively in democratic municipal review cycles. We aggregate local voices into quantitative data structures to aid community organizations and policy strategists.",
+                worksDesc: "Policies and proposals are listed straight from municipal councils and direct community requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.",
+                complianceDesc: "We preserve your structural rights to anonymized security. System designs strictly adhere to Nigeria Data Protection Regulations (NDPR) using temporary client tracking instead of gathering directly personal data.",
+                hubTitle: "Contact Information", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with NDPR rules."
             },
-
             pidgin: {
                 navAbout: "About Us", navPropose: "Suggess Topic", hero1: "Make your city", hero2: "Beta.",
                 heroSub: "Better platform for citizen to talk their mind for policy mata. Correct data na beta impact.",
@@ -477,11 +397,36 @@
                 liveBreakdown: "How Everybody Vote", backBtn: "Go Back to Voting Feed",
                 ourMission: "Our Mission", howItWorks: "How E Dey Work", complianceTitle: "Legal Compliance",
                 missionDesc: "We want make citizens choose wetin dey hapun for their side. We dey gather your voices so that community people go fit plan policy well.",
-                worksDesc: "Policy structures dey land from direct public request. Once you press your vote, we go calculate and show everyone standard dynamic progress charts.",
-                complianceDesc: "Your privacy get backing well-well. System designs respect data protection rules and we no dey save any private phone number or name.",
-                hubTitle: "How to reach Us", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with data protection regulations."
+                worksDesc: "Policy structures dey land from direct community request. Once you press your vote, we go calculate and show everyone standard dynamic progress charts.",
+                complianceDesc: "Your privacy get backing well-well. System designs respect data rules (NDPR) and we no dey save any private phone number or name.",
+                hubTitle: "How to reach Us", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with NDPR rules."
             }
         };
+
+        // ============ CUSTOM OPTION SYNTAX PARSER ============
+        function parseIssueDescription(desc) {
+            if (!desc) return { text: "", options: [] };
+            
+            // Looks for the specific standard format: [Options: Option A | Option B | Option C]
+            const match = desc.match(/(.*)\[Options:\s*(.*)\]/is);
+            if (match) {
+                const text = match[1].trim();
+                const options = match[2].split('|').map(o => o.trim());
+                return { text, options };
+            }
+            
+            // Default standard Likert responses
+            return { 
+                text: desc, 
+                options: [
+                    "Strongly Agree", 
+                    "Agree", 
+                    "Neutral", 
+                    "Disagree", 
+                    "Strongly Disagree"
+                ] 
+            };
+        }
 
         // ============ INITIAL DATA GATHERING ============
         async function initData() {
@@ -664,7 +609,13 @@
             }
 
             grid.innerHTML = filtered.map(issue => {
-                const total = (issue.stragree || 0) + (issue.agree || 0) + (issue.neutral || 0) + (issue.disagree || 0) + (issue.strdisagree || 0);
+                const { text, options } = parseIssueDescription(issue.description);
+                
+                // Dynamically map and sum any metrics columns present on the issue (except system columns)
+                const systemKeys = ['id', 'title', 'description', 'category', 'status', 'lastfp'];
+                const optionKeys = Object.keys(issue).filter(k => !systemKeys.includes(k));
+                
+                const total = optionKeys.reduce((sum, key) => sum + (Number(issue[key]) || 0), 0);
                 const hasVotedLocal = hasVoted(issue.id);
                 const isClosed = (issue.status || '').toLowerCase().trim() === 'closed';
 
@@ -693,6 +644,15 @@
                     btnAction = `openSentimentModal(${issue.id})`;
                 }
 
+                // Generates segment percentages matching either standard 5 or appended option headers
+                const segmentsHtml = optionKeys.map((key, idx) => {
+                    const val = Number(issue[key]) || 0;
+                    const percent = (val / (total || 1)) * 100;
+                    const colors = ['bg-sentiment-strAgree', 'bg-sentiment-agree', 'bg-sentiment-neutral', 'bg-sentiment-disagree', 'bg-sentiment-strDisagree', 'bg-brand-600', 'bg-emerald-600'];
+                    const colClass = colors[idx % colors.length];
+                    return `<div style="width: ${percent}%" class="${colClass} h-full"></div>`;
+                }).join('');
+
                 return `
                 <div class="group p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all hover:-translate-y-1">
                     <div class="flex justify-between items-start mb-6">
@@ -703,18 +663,14 @@
                         </div>
                     </div>
                     <h3 class="text-xl font-800 mb-3">${issue.title}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 line-clamp-2">${issue.description}</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 line-clamp-2">${text}</p>
                     <div class="mb-6">
                         <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-2">
                             <span>Engagement</span>
                             <span>${total} Voices</span>
                         </div>
                         <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
-                            <div style="width: ${(issue.stragree / total * 100) || 0}%" class="bg-sentiment-strAgree h-full"></div>
-                            <div style="width: ${(issue.agree / total * 100) || 0}%" class="bg-sentiment-agree h-full"></div>
-                            <div style="width: ${(issue.neutral / total * 100) || 0}%" class="bg-sentiment-neutral h-full"></div>
-                            <div style="width: ${(issue.disagree / total * 100) || 0}%" class="bg-sentiment-disagree h-full"></div>
-                            <div style="width: ${(issue.strdisagree / total * 100) || 0}%" class="bg-sentiment-strDisagree h-full"></div>
+                            ${segmentsHtml}
                         </div>
                     </div>
                     <div class="flex gap-2">
@@ -736,16 +692,18 @@
             const issue = allIssues.find(i => i.id == id);
             if (!issue) return;
             activeIssueId = id;
+            
+            const { text, options } = parseIssueDescription(issue.description);
+            
             document.getElementById('modal-title').innerText = issue.title;
-            document.getElementById('modal-desc').innerText = issue.description;
+            document.getElementById('modal-desc').innerText = text;
             document.getElementById('modal-category').innerText = issue.category;
             
             const hasVotedLocal = hasVoted(id);
             const isClosed = (issue.status || '').toLowerCase().trim() === 'closed';
 
-            // Clean previous active state classes
-            document.querySelectorAll('.sentiment-option').forEach(opt => opt.classList.remove('active', 'border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/10'));
             selectedSentimentValue = null;
+            selectedSentimentIndex = null;
             document.getElementById('vote-comment').value = '';
 
             const continueBtn = document.getElementById('continue-vote-btn');
@@ -754,49 +712,67 @@
             const optionList = document.getElementById('sentiment-list');
 
             if (isClosed || hasVotedLocal) {
-                // Read-only Insights Mode -- Hide options and build distribution charts
+                // Read-only Insights Mode -- Hide inputs and render dynamic distribution charts
                 if (continueBtn) continueBtn.style.display = 'none';
                 if (commentArea) commentArea.style.display = 'none';
                 if (optionList) optionList.style.display = 'none';
                 if (chartsBlock) chartsBlock.classList.remove('hidden');
 
-                const total = (issue.stragree || 0) + (issue.agree || 0) + (issue.neutral || 0) + (issue.disagree || 0) + (issue.strdisagree || 0) || 1;
+                const systemKeys = ['id', 'title', 'description', 'category', 'status', 'lastfp'];
+                const optionKeys = Object.keys(issue).filter(k => !systemKeys.includes(k));
                 
-                const percents = {
-                    stragree: Math.round((issue.stragree || 0) / total * 100),
-                    agree: Math.round((issue.agree || 0) / total * 100),
-                    neutral: Math.round((issue.neutral || 0) / total * 100),
-                    disagree: Math.round((issue.disagree || 0) / total * 100),
-                    strdisagree: Math.round((issue.strdisagree || 0) / total * 100)
-                };
+                const total = optionKeys.reduce((sum, key) => sum + (Number(issue[key]) || 0), 0) || 1;
+                const chartsContainer = document.getElementById('insights-charts-container');
 
-                // Apply width transitions and value text dynamically to SVG Progress Bars
-                Object.keys(percents).forEach(key => {
-                    const bar = document.getElementById(`chart-bar-${key}`);
-                    const valText = document.getElementById(`chart-val-${key}`);
-                    const voteCount = issue[key] || 0;
+                chartsContainer.innerHTML = options.map((opt, idx) => {
+                    const key = optionKeys[idx] || `option${idx + 1}`;
+                    const val = Number(issue[key]) || 0;
+                    const percent = Math.round((val / total) * 100);
                     
-                    if (bar) bar.style.width = `${percents[key]}%`;
-                    if (valText) valText.innerText = `${percents[key]}% (${voteCount} ${voteCount === 1 ? 'vote' : 'votes'})`;
-                });
+                    const colors = ['bg-sentiment-strAgree', 'bg-sentiment-agree', 'bg-sentiment-neutral', 'bg-sentiment-disagree', 'bg-sentiment-strDisagree', 'bg-brand-600', 'bg-emerald-600'];
+                    const colorClass = colors[idx % colors.length];
+
+                    return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-slate-700 dark:text-slate-300">${opt}</span>
+                            <span>${percent}% (${val} ${val === 1 ? 'vote' : 'votes'})</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="${colorClass} h-full transition-all duration-1000" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
 
                 showToast(currentLang === 'en' ? "Viewing live statistics/insights." : "De look how everybody vote.");
             } else {
-                // Interactive Voting Mode
+                // Interactive Custom Voting Mode - Build options on the fly
                 if (continueBtn) continueBtn.style.display = 'block';
                 if (commentArea) commentArea.style.display = 'block';
                 if (optionList) optionList.style.display = 'block';
                 if (chartsBlock) chartsBlock.classList.add('hidden');
+
+                optionList.innerHTML = options.map((opt, idx) => {
+                    return `
+                    <button onclick="selectSentiment('${opt.replace(/'/g, "\\'")}', ${idx})" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
+                        <span class="font-bold">${opt}</span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
+                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
+                        </div>
+                    </button>
+                    `;
+                }).join('');
             }
 
             openModal('sentiment-modal');
         }
 
-        function selectSentiment(val) {
+        function selectSentiment(val, idx) {
             selectedSentimentValue = val;
-            document.querySelectorAll('.sentiment-option').forEach(opt => {
-                const isActive = opt.querySelector('span').getAttribute('data-i18n') === 
-                    Object.keys(i18n.en).find(key => i18n.en[key] === val);
+            selectedSentimentIndex = idx;
+            document.querySelectorAll('.sentiment-option').forEach((opt, i) => {
+                const isActive = (i === idx);
                 opt.classList.toggle('active', isActive);
                 opt.classList.toggle('border-brand-500', isActive);
                 opt.classList.toggle('bg-brand-50', isActive);
@@ -805,7 +781,7 @@
         }
 
         function nextToDemographics() {
-            if (!selectedSentimentValue) return showToast("Select sentiment", "error");
+            if (selectedSentimentValue === null || selectedSentimentIndex === null) return showToast("Select an option", "error");
             if (hasVoted(activeIssueId)) return showToast("Already voted", "error");
             closeModal('sentiment-modal');
             openModal('demographics-modal');
@@ -825,13 +801,13 @@
             const demoData = isSkip ? {
                 age: "N/A",
                 gender: "N/A",
-                location: "N/A",
+                neighborhood: "N/A",
                 education: "N/A",
                 employment: "N/A"
             } : {
                 age: document.getElementById('demo-age').value || "N/A",
                 gender: document.getElementById('demo-gender').value || "N/A",
-                location: document.getElementById('demo-hood').value || "N/A",
+                neighborhood: document.getElementById('demo-hood').value || "N/A",
                 education: document.getElementById('demo-edu').value || "N/A",
                 employment: document.getElementById('demo-emp').value || "N/A"
             };
@@ -841,6 +817,7 @@
                 action: 'castVote',
                 issueId: activeIssueId,
                 sentiment: selectedSentimentValue,
+                optionIndex: selectedSentimentIndex, // Backend reads option index to align with columns dynamically
                 comment: document.getElementById('vote-comment').value,
                 demographics: demoData
             });
