@@ -624,15 +624,10 @@
                 let btnClass = '';
 
                 if (isClosed) {
-                    btnText = currentLang === 'en' ? 'Voting Closed' : 'Vote Don Close';
-                    btnClass = 'bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed';
-                    if (hasVotedLocal) {
-                        btnText = currentLang === 'en' ? 'View Insights (Closed)' : 'See wetin hapun';
-                        btnAction = `openSentimentModal(${issue.id})`;
-                        btnClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:opacity-90';
-                    } else {
-                        btnAction = `showToast("${currentLang === 'en' ? 'This issue has been closed' : 'This topic don close'}","error")`;
-                    }
+                    // Closed topic insights are now fully accessible to everyone!
+                    btnText = currentLang === 'en' ? 'View Insights (Closed)' : 'See wetin hapun';
+                    btnAction = `openSentimentModal(${issue.id})`;
+                    btnClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:opacity-90';
                 } else {
                     if (hasVotedLocal) {
                         btnText = currentLang === 'en' ? 'View Insights' : 'See wetin hapun';
