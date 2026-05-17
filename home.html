@@ -173,52 +173,36 @@
         </div>
     </div>
 
-    <!-- Modal: Optional Demographics --> 
+    <!-- Modal: Optional Demographics -->
     <div id="demographics-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
         <div class="modal-content glass w-full max-w-xl rounded-[40px] shadow-2xl modal-enter overflow-y-auto max-h-[90vh]">
             <div class="p-8">
-                <h2 class="text-2xl font-800 mb-2">Almost Done!</h2>
-                <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm">We use this anonymized data to provide demographic insights to policy makers.</p>
-                
-                <form id="demo-form" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Age Group</label>
-                        <select id="demo-age" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
-                            <option value="">Select Age</option>
-                            <option>18-24</option><option>25-34</option><option>35-44</option><option>45-54</option><option>55-64</option><option>65+</option>
-                        </select>
-                    </div>
+                <h2 class="text-2xl font-800 mb-2" data-i18n="demoTitle">Almost Done!</h2>
+                <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="demoSub">We use this optional anonymized data to provide demographic insights. All fields are optional.</p>
+                <form id="demo-form" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Gender</label>
-                            <select id="demo-gender" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
-                                <option value="">Select</option>
-                                <option>Male</option><option>Female</option><option>Non-binary</option><option>Other</option>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="ageLabel">Age Group</label>
+                            <select id="demo-age" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>18-24</option><option>25-34</option><option>35-44</option><option>45-54</option><option>55-64</option><option>65+</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Neighborhood</label>
-                            <input id="demo-hood" type="text" placeholder="e.g. Downtown" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="genderLabel">Gender</label>
+                            <select id="demo-gender" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>Male</option><option>Female</option><option>Other</option>
+                            </select>
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Education</label>
-                        <select id="demo-edu" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
-                            <option value="">Select</option>
-                            <option>High School</option><option>Bachelors</option><option>Masters</option><option>PhD</option><option>Other</option>
-                        </select>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Neighborhood</label>
+                        <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Downtown" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Employment</label>
-                        <select id="demo-emp" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
-                            <option value="">Select</option>
-                            <option>Student</option><option>Employed</option><option>Self-Employed</option><option>Unemployed</option><option>Retired</option>
-                        </select>
-                    </div>
-                    
                     <div class="flex gap-4 pt-4">
-                        <button type="button" onclick="closeModal()" class="flex-1 p-4 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">Cancel</button>
-                        <button type="button" onclick="finalizeVote()" class="flex-[2] bg-brand-600 text-white p-4 rounded-2xl font-bold shadow-xl shadow-brand-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all">Cast Vote</button>
+                        <button type="button" onclick="finalizeVote(true)" class="flex-1 p-4 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-all" data-i18n="skipBtn">Skip & Submit</button>
+                        <button type="button" onclick="finalizeVote(false)" class="flex-1 bg-brand-600 text-white p-4 rounded-2xl font-bold shadow-lg transition-all hover:scale-105" data-i18n="castVote">Cast Vote</button>
                     </div>
                 </form>
             </div>
@@ -393,14 +377,9 @@
             const demoData = isSkip ? {} : {
                 age: document.getElementById('demo-age').value,
                 gender: document.getElementById('demo-gender').value,
-                neighborhood: document.getElementById('demo-hood').value,
-                education: document.getElementById('demo-edu').value,
-                employment: document.getElementById('demo-emp').value
+                neighborhood: document.getElementById('demo-hood').value
             };
-
-
-            showToast("Recording vote...");
-
+            showToast("Recording...");
             const res = await submitData({
                 action: 'castVote',
                 issueId: activeIssueId,
@@ -408,15 +387,12 @@
                 comment: document.getElementById('vote-comment').value,
                 demographics: demoData
             });
-            if (result.success) {
+            if (res.success) {
                 markVotedLocal(activeIssueId);
                 closeModal();
-                showToast("Vote recorded successfully!");
-                initData(); // Refresh UI
-            } else {
-                showToast("Error: " + (result.error || "Unknown"), "error");
+                showToast("Vote recorded!");
+                initData();
             }
-            
         }
 
         async function handleSuggestion(event, type) {
