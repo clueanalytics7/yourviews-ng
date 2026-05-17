@@ -1,5 +1,887 @@
+<!-- <!DOCTYPE html>
+ <html>
+ <head><meta http-equiv="refresh" content="0; url=home.html"></head>
+ <body>Redirecting...</body>
+ </html> -->
+
+
 <!DOCTYPE html>
-<html>
-<head><meta http-equiv="refresh" content="0; url=home.html"></head>
-<body>Redirecting...</body>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>YourViews | Citizen Policy Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' }, 
+                        sentiment: {
+                            strAgree: '#16a34a', 
+                            agree: '#4ade80',    
+                            neutral: '#94a3b8',  
+                            disagree: '#fb923c', 
+                            strDisagree: '#ef4444'
+                        }
+                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .dark .glass { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .modal-enter { animation: modalFadeIn 0.3s ease-out forwards; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        /* Shimmer loading animations */
+        .shimmer {
+            background: linear-gradient(90deg, rgba(226,232,240,1) 25%, rgba(203,213,225,1) 50%, rgba(226,232,240,1) 75%);
+            background-size: 200% 100%;
+            animation: pulse-shimmer 1.5s infinite;
+        }
+        .dark .shimmer {
+            background: linear-gradient(90deg, rgba(30,41,59,1) 25%, rgba(51,65,85,1) 50%, rgba(30,41,59,1) 75%);
+            background-size: 200% 100%;
+            animation: pulse-shimmer 1.5s infinite;
+        }
+        @keyframes pulse-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
+
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="toggleView('home')">
+                    <div class="bg-brand-600 p-2 rounded-xl">
+                        <i class="fas fa-vote-yea text-white"></i>
+                    </div>
+                    <span class="text-xl font-800 tracking-tight bg-gradient-to-r from-brand-600 to-emerald-600 bg-clip-text text-transparent">YourViews</span>
+                </div>
+                
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <!-- Network Status indicator -->
+                    <span id="network-badge" class="hidden text-xs font-bold px-2 py-1 bg-amber-500 text-white rounded-lg animate-pulse">Offline</span>
+                    
+                    <button onclick="toggleLanguage()" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <span id="lang-label">Pidgin</span>
+                    </button>
+                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                    <button onclick="toggleView('about')" data-i18n="navAbout" class="hidden sm:block text-sm font-semibold hover:text-brand-600">About</button>
+                    <button onclick="openModal('proposal-modal')" data-i18n="navPropose" class="bg-brand-600 text-white px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
+                        Propose Topic
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-20 px-4 max-w-7xl mx-auto">
+        <div id="home-view">
+            <div class="mb-12 text-center">
+                <h1 class="text-4xl sm:text-5xl font-800 mb-4 tracking-tight leading-tight">
+                    <span data-i18n="hero1">Shape your city's</span> <span class="text-brand-600" data-i18n="hero2">Future.</span>
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed" data-i18n="heroSub">
+                    A transparent platform for citizens to voice their opinions on local policy changes. Real data for real impact.
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-2 mt-8">
+                    <button onclick="setCategory('All')" class="category-btn active px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catAll">All</button>
+                    <button onclick="setCategory('Infrastructure')" class="category-btn px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catInfra">Infrastructure</button>
+                    <button onclick="setCategory('Environment')" class="category-btn px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catEnv">Environment</button>
+                    <button onclick="setCategory('Social')" class="category-btn px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catSocial">Social</button>
+                </div>
+            </div>
+
+            <!-- Issues Grid (Holds pulsing skeletons initially) -->
+            <div id="issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Skeleton Card 1 -->
+                <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="h-4 w-1/4 shimmer rounded"></div>
+                    <div class="h-6 w-3/4 shimmer rounded"></div>
+                    <div class="h-12 w-full shimmer rounded-xl"></div>
+                    <div class="h-8 w-full shimmer rounded-lg"></div>
+                </div>
+                <!-- Skeleton Card 2 -->
+                <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="h-4 w-1/4 shimmer rounded"></div>
+                    <div class="h-6 w-3/4 shimmer rounded"></div>
+                    <div class="h-12 w-full shimmer rounded-xl"></div>
+                    <div class="h-8 w-full shimmer rounded-lg"></div>
+                </div>
+                <!-- Skeleton Card 3 -->
+                <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="h-4 w-1/4 shimmer rounded"></div>
+                    <div class="h-6 w-3/4 shimmer rounded"></div>
+                    <div class="h-12 w-full shimmer rounded-xl"></div>
+                    <div class="h-8 w-full shimmer rounded-lg"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="about-view" class="hidden max-w-4xl mx-auto py-12">
+            <h2 class="text-3xl font-800 mb-6" data-i18n="navAbout">About YourViews</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="space-y-4">
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="aboutText">
+                        This project was created to bridge the gap between policy makers and everyday citizens. We believe that when data is transparent and accessible, communities thrive.
+                    </p>
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <h3 class="font-bold mb-4" data-i18n="contactTitle">Contact the Team</h3>
+                        <form id="contact-form" onsubmit="handleSuggestion(event, 'Contact')" class="space-y-4">
+                            <input type="email" id="contact-email" placeholder="Email Address" required class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none">
+                            <textarea id="contact-content" placeholder="How can we help?" rows="3" required class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none"></textarea>
+                            <button type="submit" id="contact-submit-btn" class="w-full bg-brand-600 text-white py-3 rounded-xl font-bold transition-all hover:opacity-90" data-i18n="sendBtn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-100 dark:bg-slate-900/50 p-8 rounded-[40px] border border-slate-200 dark:border-slate-800">
+                    <h3 class="font-800 text-xl mb-4" data-i18n="legalTitle">Data Privacy & Compliance</h3>
+                    <div class="space-y-4 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <p><strong class="text-slate-900 dark:text-slate-200">NDPR Compliance:</strong> In accordance with the Nigeria Data Protection Regulation (NDPR), YourViews is committed to protecting the personal data of our users. We implement technical and organizational measures to ensure a level of security appropriate to the risk.</p>
+                        <p><strong class="text-slate-900 dark:text-slate-200">Data Minimization:</strong> We only collect the minimum information necessary for policy analysis. All demographic data is optional and used solely for aggregated statistical purposes.</p>
+                        <p><strong class="text-slate-900 dark:text-slate-200">Anonymity:</strong> Votes are linked to browser fingerprints to prevent duplication, but we do not store personally identifiable information (PII) like names or phone numbers.</p>
+                        <p><strong class="text-slate-900 dark:text-slate-200">Your Rights:</strong> Under NDPR, you have the right to access your data, request deletion, or object to processing. Since our data is anonymized, identifying specific records for deletion requires your unique Fingerprint ID: <code id="display-fp" class="bg-slate-200 dark:bg-slate-800 px-1 rounded">...</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Vote Sentiment & Insights -->
+    <div id="sentiment-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+        <div class="modal-content glass w-full max-w-xl rounded-[40px] shadow-2xl overflow-hidden modal-enter">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="bg-brand-100 dark:bg-brand-900/30 text-brand-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase" id="modal-category">Policy</div>
+                    <button onclick="closeModal()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fas fa-times"></i></button>
+                </div>
+                <h2 id="modal-title" class="text-2xl font-800 mb-2 leading-tight">Issue Title</h2>
+                <p id="modal-desc" class="text-slate-500 dark:text-slate-400 mb-6 text-sm">Description.</p>
+
+                <!-- Dynamic Live Insights Progress-Bar View -->
+                <div id="insights-charts-block" class="hidden space-y-4 mb-6 bg-slate-100/50 dark:bg-slate-900/40 p-5 rounded-3xl border border-slate-200/50 dark:border-slate-800/50">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1" data-i18n="liveBreakdown">Live Opinion Breakdown</h3>
+                    
+                    <!-- Progress Bar Component Row: Strongly Agree -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-sentiment-strAgree" data-i18n="opt1">Strongly Agree</span>
+                            <span id="chart-val-stragree">0% (0 votes)</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div id="chart-bar-stragree" class="bg-sentiment-strAgree h-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar Component Row: Agree -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-brand-500" data-i18n="opt2">Agree</span>
+                            <span id="chart-val-agree">0% (0 votes)</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div id="chart-bar-agree" class="bg-sentiment-agree h-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar Component Row: Neutral -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-sentiment-neutral" data-i18n="opt3">Neutral</span>
+                            <span id="chart-val-neutral">0% (0 votes)</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div id="chart-bar-neutral" class="bg-sentiment-neutral h-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar Component Row: Disagree -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-sentiment-disagree" data-i18n="opt4">Disagree</span>
+                            <span id="chart-val-disagree">0% (0 votes)</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div id="chart-bar-disagree" class="bg-sentiment-disagree h-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar Component Row: Strongly Disagree -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span class="text-sentiment-strDisagree" data-i18n="opt5">Strongly Disagree</span>
+                            <span id="chart-val-strdisagree">0% (0 votes)</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div id="chart-bar-strdisagree" class="bg-sentiment-strDisagree h-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Selection list (Hidden when viewing insights only) -->
+                <div class="space-y-2 mb-6" id="sentiment-list">
+                    <button onclick="selectSentiment('Strongly Agree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
+                        <span class="font-bold" data-i18n="opt1">Strongly Agree</span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
+                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
+                        </div>
+                    </button>
+                    <button onclick="selectSentiment('Agree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
+                        <span class="font-bold" data-i18n="opt2">Agree</span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
+                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
+                        </div>
+                    </button>
+                    <button onclick="selectSentiment('Neutral')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
+                        <span class="font-bold" data-i18n="opt3">Neutral</span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
+                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
+                        </div>
+                    </button>
+                    <button onclick="selectSentiment('Disagree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
+                        <span class="font-bold" data-i18n="opt4">Disagree</span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
+                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
+                        </div>
+                    </button>
+                    <button onclick="selectSentiment('Strongly Disagree')" class="sentiment-option w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex justify-between items-center hover:border-brand-500 transition-all group">
+                        <span class="font-bold" data-i18n="opt5">Strongly Disagree</span>
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center group-[.active]:bg-brand-500 group-[.active]:border-brand-500">
+                            <i class="fas fa-check text-white text-[10px] hidden group-[.active]:block"></i>
+                        </div>
+                    </button>
+                </div>
+                
+                <textarea id="vote-comment" data-i18n-ph="commentPh" placeholder="Explain your perspective (optional)..." rows="2" class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none mb-6"></textarea>
+                <button onclick="nextToDemographics()" id="continue-vote-btn" class="w-full bg-slate-900 dark:bg-white dark:text-slate-950 text-white py-4 rounded-2xl font-bold shadow-xl transition-all hover:scale-[1.02]" data-i18n="continue">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Optional Demographics -->
+    <div id="demographics-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+        <div class="modal-content glass w-full max-w-xl rounded-[40px] shadow-2xl modal-enter overflow-y-auto max-h-[90vh]">
+            <div class="p-8">
+                <h2 class="text-2xl font-800 mb-2" data-i18n="demoTitle">Almost Done!</h2>
+                <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="demoSub">We use this optional anonymized data to provide demographic insights. All fields are optional.</p>
+                <form id="demo-form" class="space-y-4" onsubmit="event.preventDefault();">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="ageLabel">Age Group</label>
+                            <select id="demo-age" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>18-24</option><option>25-34</option><option>35-44</option><option>45-54</option><option>55-64</option><option>65+</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="genderLabel">Gender</label>
+                            <select id="demo-gender" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>Male</option><option>Female</option><option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Neighborhood</label>
+                        <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Downtown" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="eduLabel">Education</label>
+                            <select id="demo-edu" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>High School</option>
+                                <option>Bachelors</option>
+                                <option>Masters</option>
+                                <option>PhD</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="empLabel">Employment</label>
+                            <select id="demo-emp" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>Student</option>
+                                <option>Employed</option>
+                                <option>Self-Employed</option>
+                                <option>Unemployed</option>
+                                <option>Retired</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-4">
+                        <button type="button" id="skip-vote-btn" onclick="finalizeVote(true)" class="flex-1 p-4 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all" data-i18n="skipBtn">Skip & Submit</button>
+                        <button type="button" id="cast-vote-btn" onclick="finalizeVote(false)" class="flex-1 bg-brand-600 text-white p-4 rounded-2xl font-bold shadow-lg transition-all hover:scale-105" data-i18n="castVote">Cast Vote</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Proposal -->
+    <div id="proposal-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+        <div class="modal-content glass w-full max-w-xl rounded-[40px] shadow-2xl modal-enter">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl font-800" data-i18n="propTopic">Propose Topic</h2>
+                    <button onclick="closeModal()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fas fa-times"></i></button>
+                </div>
+                <form id="prop-form" onsubmit="handleSuggestion(event, 'Proposal')" class="space-y-4">
+                    <input type="email" id="prop-email" placeholder="Your Email" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none">
+                    <textarea id="prop-content" data-i18n-ph="propPh" placeholder="Describe the policy issue..." rows="4" required class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none"></textarea>
+                    <button type="submit" id="prop-submit-btn" class="w-full bg-brand-600 text-white py-4 rounded-2xl font-bold" data-i18n="submitBtn">Submit Proposal</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert / Status Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-2xl transform transition-all translate-y-20 opacity-0">
+        <span id="toast-msg">Success!</span>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby05rHr2m7A2dHoKVAs0kx3Z3Y7XoAU1b61DTtjKWLwkp70w8w6R5hwHA63UyvU1yDMdA/exec"; // REPLACE THIS WITH YOUR WEB APP URL
+        
+        let allIssues = [];
+        let currentFilter = 'All';
+        let activeIssueId = null;
+        let selectedSentimentValue = null;
+        let currentLang = 'en';
+
+        const i18n = {
+            en: {
+                navAbout: "About", navPropose: "Propose Topic", hero1: "Shape your city's", hero2: "Future.",
+                heroSub: "A transparent platform for citizens to voice their opinions on local policy changes.",
+                catAll: "All", catInfra: "Infrastructure", catEnv: "Environment", catSocial: "Social",
+                opt1: "Strongly Agree", opt2: "Agree", opt3: "Neutral", opt4: "Disagree", opt5: "Strongly Disagree",
+                continue: "Continue", skipBtn: "Skip & Submit", castVote: "Cast Vote", sendBtn: "Send Message",
+                commentPh: "Explain your perspective (optional)...", hoodPh: "e.g. Downtown", propPh: "Describe the policy issue...",
+                demoTitle: "Almost Done!", demoSub: "Aggregated data helps us analyze patterns. No field is compulsory.",
+                ageLabel: "Age Group", genderLabel: "Gender", hoodLabel: "Neighborhood", select: "Select",
+                eduLabel: "Education", empLabel: "Employment", closedText: "Voting Closed",
+                propTopic: "Propose Topic", submitBtn: "Submit Proposal", contactTitle: "Contact the Team",
+                legalTitle: "Data Privacy & Compliance", aboutText: "Connecting voices to policies.",
+                liveBreakdown: "Live Opinion Breakdown"
+            },
+            pidgin: {
+                navAbout: "About Us", navPropose: "Suggess Topic", hero1: "Make your city", hero2: "Beta.",
+                heroSub: "Better platform for citizen to talk their mind for policy mata. Correct data na beta impact.",
+                catAll: "All", catInfra: "Road/Light", catEnv: "Environment", catSocial: "Social",
+                opt1: "I Agree Well-Well", opt2: "I Agree", opt3: "I No Know", opt4: "I No Agree", opt5: "I No Agree At All",
+                continue: "Contunue", skipBtn: "No Worry, Just Submit", castVote: "Vote Now", sendBtn: "Send Message",
+                commentPh: "Talk your mind here (if you want)...", hoodPh: "e.g. Your Area", propPh: "Wetin be the issue...",
+                demoTitle: "Small Remain!", demoSub: "Help us know the group wey dey vote. You no must to answer.",
+                ageLabel: "Your Age", genderLabel: "Boy or Girl", hoodLabel: "Your Area", select: "Choose",
+                eduLabel: "School Level", empLabel: "Your Work", closedText: "Vote Don Close",
+                propTopic: "Suggess Topic", submitBtn: "Submit", contactTitle: "Talk to Us",
+                legalTitle: "How we dey keep your data", aboutText: "We dey join citizens to better policy.",
+                liveBreakdown: "How Everybody Vote"
+            }
+        };
+
+        // ============ INITIAL DATA GATHERING ============
+        async function initData() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getIssues`);
+                if (!response.ok) throw new Error("HTTP error on load fetching issues.");
+                allIssues = await response.json();
+                renderIssues();
+            } catch (err) {
+                showToast("Connection failed. Showing cached data if available.", "error");
+                const cached = localStorage.getItem('cached_issues');
+                if (cached) {
+                    allIssues = JSON.parse(cached);
+                    renderIssues();
+                }
+            }
+        }
+
+        async function getFingerprint() {
+            let fp = localStorage.getItem('user_fp');
+            if (!fp) {
+                fp = 'fp_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+                localStorage.setItem('user_fp', fp);
+            }
+            const displayEl = document.getElementById('display-fp');
+            if (displayEl) displayEl.innerText = fp;
+            return fp;
+        }
+
+        // ============ ROBUST SUBMISSION MODULE (CORS & OFFLINE-READY) ============
+        async function submitData(payload) {
+            payload.fingerprint = await getFingerprint();
+            
+            // Offline queue interception checking
+            if (!navigator.onLine) {
+                queueOfflineVote(payload);
+                return { success: true, offline: true };
+            }
+
+            try {
+                // Eliminating no-cors. Apps Script with text/plain prevents CORS preflights and outputs JSON natively
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) throw new Error("Server responded with HTTP error code " + response.status);
+                const result = await response.json();
+                return result; 
+            } catch (e) {
+                console.warn("Network post failed. Queuing for background sync...", e);
+                queueOfflineVote(payload);
+                return { success: true, offline: true };
+            }
+        }
+
+        // ============ OFFLINE QUEUE UTILS ============
+        function queueOfflineVote(payload) {
+            let queue = JSON.parse(localStorage.getItem('offline_vote_queue') || '[]');
+            
+            // Block duplicate inserts in offline queue matching issue ID
+            const isQueued = queue.some(item => item.issueId === payload.issueId);
+            if (!isQueued) {
+                queue.push(payload);
+                localStorage.setItem('offline_vote_queue', JSON.stringify(queue));
+            }
+            
+            showToast("Offline mode. Your vote is saved and will sync automatically once connected!", "error");
+        }
+
+        async function syncPendingVotes() {
+            const queue = JSON.parse(localStorage.getItem('offline_vote_queue') || '[]');
+            if (queue.length === 0) return;
+
+            console.log("Internet restored. Flashing offline synchronization queue...");
+            showToast("Restoring connection... syncing saved offline votes.");
+
+            let updatedQueue = [...queue];
+            for (let i = 0; i < queue.length; i++) {
+                const item = queue[i];
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(item)
+                    });
+                    const res = await response.json();
+                    if (res.success) {
+                        // Successfully recorded. Remove from cache list
+                        updatedQueue = updatedQueue.filter(v => v.issueId !== item.issueId);
+                        markVotedLocal(item.issueId);
+                    }
+                } catch (err) {
+                    console.error("Single offline queue element failure syncing: ", err);
+                }
+            }
+
+            localStorage.setItem('offline_vote_queue', JSON.stringify(updatedQueue));
+            if (updatedQueue.length === 0) {
+                showToast("All offline votes synced successfully!");
+                initData();
+            }
+        }
+
+        // Event hooks to watch local network changes
+        window.addEventListener('online', () => {
+            const badge = document.getElementById('network-badge');
+            if (badge) badge.classList.add('hidden');
+            syncPendingVotes();
+        });
+        
+        window.addEventListener('offline', () => {
+            const badge = document.getElementById('network-badge');
+            if (badge) badge.classList.remove('hidden');
+        });
+
+        // ============ DOM RENDER SYSTEM ============
+        function renderIssues() {
+            const grid = document.getElementById('issues-grid');
+            
+            // Cache current state safely
+            localStorage.setItem('cached_issues', JSON.stringify(allIssues));
+
+            // Filter logic: Exclude 'Archive' topics completely
+            const visibleIssues = allIssues.filter(i => {
+                const status = (i.status || '').toLowerCase().trim();
+                return status === 'active' || status === 'closed';
+            });
+
+            const filtered = currentFilter === 'All' ? visibleIssues : visibleIssues.filter(i => i.category === currentFilter);
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No active issues found in this category.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(issue => {
+                const total = (issue.stragree || 0) + (issue.agree || 0) + (issue.neutral || 0) + (issue.disagree || 0) + (issue.strdisagree || 0);
+                const hasVotedLocal = hasVoted(issue.id);
+                const isClosed = (issue.status || '').toLowerCase().trim() === 'closed';
+
+                let btnText = '';
+                let btnAction = '';
+                let btnClass = '';
+
+                if (isClosed) {
+                    btnText = currentLang === 'en' ? 'Voting Closed' : 'Vote Don Close';
+                    btnClass = 'bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed';
+                    if (hasVotedLocal) {
+                        btnText = currentLang === 'en' ? 'View Insights (Closed)' : 'See wetin hapun';
+                        btnAction = `openSentimentModal(${issue.id})`;
+                        btnClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:opacity-90';
+                    } else {
+                        btnAction = `showToast("${currentLang === 'en' ? 'This issue has been closed' : 'This topic don close'}","error")`;
+                    }
+                } else {
+                    if (hasVotedLocal) {
+                        btnText = currentLang === 'en' ? 'View Insights' : 'See wetin hapun';
+                        btnClass = 'bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 hover:opacity-90';
+                    } else {
+                        btnText = currentLang === 'en' ? 'Cast Vote' : 'Vote Now';
+                        btnClass = 'bg-slate-900 dark:bg-white dark:text-slate-900 text-white hover:opacity-90 active:scale-95';
+                    }
+                    btnAction = `openSentimentModal(${issue.id})`;
+                }
+
+                return `
+                <div class="group p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="text-[10px] font-800 uppercase tracking-widest px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500">${issue.category}</span>
+                        <div class="flex items-center gap-2">
+                            ${isClosed ? `<span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-lg">${currentLang === 'en' ? 'Closed' : 'Close'}</span>` : ''}
+                            ${hasVotedLocal ? '<i class="fas fa-check-circle text-brand-600"></i>' : ''}
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-800 mb-3">${issue.title}</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 line-clamp-2">${issue.description}</p>
+                    <div class="mb-6">
+                        <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-2">
+                            <span>Engagement</span>
+                            <span>${total} Voices</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                            <div style="width: ${(issue.stragree / total * 100) || 0}%" class="bg-sentiment-strAgree h-full"></div>
+                            <div style="width: ${(issue.agree / total * 100) || 0}%" class="bg-sentiment-agree h-full"></div>
+                            <div style="width: ${(issue.neutral / total * 100) || 0}%" class="bg-sentiment-neutral h-full"></div>
+                            <div style="width: ${(issue.disagree / total * 100) || 0}%" class="bg-sentiment-disagree h-full"></div>
+                            <div style="width: ${(issue.strdisagree / total * 100) || 0}%" class="bg-sentiment-strDisagree h-full"></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="${btnAction}" class="flex-1 py-3.5 rounded-2xl text-sm font-bold transition-all ${btnClass}">
+                            ${btnText}
+                        </button>
+                        <button onclick="shareIssue(${issue.id})" class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all hover:bg-slate-200">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            updateI18n();
+        }
+
+        // ============ DISPLAY REAL-TIME INSIGHT CHARTS IN MODAL ============
+        function openSentimentModal(id) {
+            const issue = allIssues.find(i => i.id == id);
+            if (!issue) return;
+            activeIssueId = id;
+            document.getElementById('modal-title').innerText = issue.title;
+            document.getElementById('modal-desc').innerText = issue.description;
+            document.getElementById('modal-category').innerText = issue.category;
+            
+            const hasVotedLocal = hasVoted(id);
+            const isClosed = (issue.status || '').toLowerCase().trim() === 'closed';
+
+            // Clean previous active state classes
+            document.querySelectorAll('.sentiment-option').forEach(opt => opt.classList.remove('active', 'border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/10'));
+            selectedSentimentValue = null;
+            document.getElementById('vote-comment').value = '';
+
+            const continueBtn = document.getElementById('continue-vote-btn');
+            const commentArea = document.getElementById('vote-comment');
+            const chartsBlock = document.getElementById('insights-charts-block');
+            const optionList = document.getElementById('sentiment-list');
+
+            if (isClosed || hasVotedLocal) {
+                // Read-only Insights Mode -- Hide options and build distribution charts
+                if (continueBtn) continueBtn.style.display = 'none';
+                if (commentArea) commentArea.style.display = 'none';
+                if (optionList) optionList.style.display = 'none';
+                if (chartsBlock) chartsBlock.classList.remove('hidden');
+
+                const total = (issue.stragree || 0) + (issue.agree || 0) + (issue.neutral || 0) + (issue.disagree || 0) + (issue.strdisagree || 0) || 1;
+                
+                const percents = {
+                    stragree: Math.round((issue.stragree || 0) / total * 100),
+                    agree: Math.round((issue.agree || 0) / total * 100),
+                    neutral: Math.round((issue.neutral || 0) / total * 100),
+                    disagree: Math.round((issue.disagree || 0) / total * 100),
+                    strdisagree: Math.round((issue.strdisagree || 0) / total * 100)
+                };
+
+                // Apply width transitions and value text dynamically to SVG Progress Bars
+                Object.keys(percents).forEach(key => {
+                    const bar = document.getElementById(`chart-bar-${key}`);
+                    const valText = document.getElementById(`chart-val-${key}`);
+                    const voteCount = issue[key] || 0;
+                    
+                    if (bar) bar.style.width = `${percents[key]}%`;
+                    if (valText) valText.innerText = `${percents[key]}% (${voteCount} ${voteCount === 1 ? 'vote' : 'votes'})`;
+                });
+
+                showToast(currentLang === 'en' ? "Viewing live statistics/insights." : "De look how everybody vote.");
+            } else {
+                // Interactive Voting Mode
+                if (continueBtn) continueBtn.style.display = 'block';
+                if (commentArea) commentArea.style.display = 'block';
+                if (optionList) optionList.style.display = 'block';
+                if (chartsBlock) chartsBlock.classList.add('hidden');
+            }
+
+            openModal('sentiment-modal');
+        }
+
+        function selectSentiment(val) {
+            selectedSentimentValue = val;
+            document.querySelectorAll('.sentiment-option').forEach(opt => {
+                const isActive = opt.querySelector('span').getAttribute('data-i18n') === 
+                    Object.keys(i18n.en).find(key => i18n.en[key] === val);
+                opt.classList.toggle('active', isActive);
+                opt.classList.toggle('border-brand-500', isActive);
+                opt.classList.toggle('bg-brand-50', isActive);
+                opt.classList.toggle('dark:bg-brand-900/10', isActive);
+            });
+        }
+
+        function nextToDemographics() {
+            if (!selectedSentimentValue) return showToast("Select sentiment", "error");
+            if (hasVoted(activeIssueId)) return showToast("Already voted", "error");
+            closeModal('sentiment-modal');
+            openModal('demographics-modal');
+        }
+
+        async function finalizeVote(isSkip) {
+            const castBtn = document.getElementById('cast-vote-btn');
+            const skipBtn = document.getElementById('skip-vote-btn');
+
+            // Apply UX Saving Indicators to prevent secondary clicks
+            if (castBtn) {
+                castBtn.disabled = true;
+                castBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+            }
+            if (skipBtn) skipBtn.disabled = true;
+
+            const demoData = isSkip ? {
+                age: "N/A",
+                gender: "N/A",
+                neighborhood: "N/A",
+                education: "N/A",
+                employment: "N/A"
+            } : {
+                age: document.getElementById('demo-age').value || "N/A",
+                gender: document.getElementById('demo-gender').value || "N/A",
+                neighborhood: document.getElementById('demo-hood').value || "N/A",
+                education: document.getElementById('demo-edu').value || "N/A",
+                employment: document.getElementById('demo-emp').value || "N/A"
+            };
+
+            showToast("Recording...");
+            const res = await submitData({
+                action: 'castVote',
+                issueId: activeIssueId,
+                sentiment: selectedSentimentValue,
+                comment: document.getElementById('vote-comment').value,
+                demographics: demoData
+            });
+
+            // Restore UX Elements
+            if (castBtn) {
+                castBtn.disabled = false;
+                castBtn.innerText = "Cast Vote";
+            }
+            if (skipBtn) skipBtn.disabled = false;
+
+            if (res.success) {
+                markVotedLocal(activeIssueId);
+                closeModal();
+                showToast(res.offline ? "Offline Sync active!" : "Vote recorded!");
+                document.getElementById('demo-form').reset();
+                if (!res.offline) initData();
+            } else {
+                showToast("Error: " + (res.error || "Execution failed"), "error");
+            }
+        }
+
+        async function handleSuggestion(event, type) {
+            event.preventDefault();
+            const emailInput = type === 'Proposal' ? document.getElementById('prop-email') : document.getElementById('contact-email');
+            const contentInput = type === 'Proposal' ? document.getElementById('prop-content') : document.getElementById('contact-content');
+            const submitBtn = type === 'Proposal' ? document.getElementById('prop-submit-btn') : document.getElementById('contact-submit-btn');
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+            }
+
+            showToast("Sending...");
+            const res = await submitData({ 
+                action: 'submitSuggestion', 
+                type, 
+                email: emailInput.value, 
+                content: contentInput.value 
+            });
+
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = type === 'Proposal' ? "Submit Proposal" : "Send Message";
+            }
+
+            if (res.success) {
+                showToast(res.offline ? "Saved to offline sync queue!" : "Sent!");
+                closeModal();
+                event.target.reset();
+            } else {
+                showToast("Failed to process suggestion.", "error");
+            }
+        }
+
+        function shareIssue(id) {
+            const issue = allIssues.find(i => i.id == id);
+            const url = `${window.location.origin}${window.location.pathname}?id=${id}`;
+            const text = `Take a look at this policy issue on YourViews: "${issue?.title || 'YourViews Policy Hub'}"`;
+            
+            if (navigator.share) {
+                navigator.share({ title: 'YourViews', text: text, url: url })
+                    .catch(console.error);
+            } else {
+                const tempInput = document.createElement("input");
+                tempInput.value = url;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast("Deep-link copied to clipboard!");
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'pidgin' : 'en';
+            document.getElementById('lang-label').innerText = currentLang === 'en' ? 'Pidgin' : 'English';
+            updateI18n();
+            renderIssues();
+        }
+
+        function updateI18n() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (i18n[currentLang][key]) el.placeholder = i18n[currentLang][key];
+            });
+        }
+
+        function openModal(id) {
+            const m = document.getElementById(id);
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            const modals = id ? [document.getElementById(id)] : document.querySelectorAll('[id$="-modal"]');
+            modals.forEach(m => { m.classList.add('hidden'); m.classList.remove('flex'); });
+            document.body.style.overflow = 'auto';
+        }
+
+        function hasVoted(id) { return JSON.parse(localStorage.getItem('voted_issues') || '[]').includes(id); }
+        function markVotedLocal(id) {
+            const v = JSON.parse(localStorage.getItem('voted_issues') || '[]');
+            if (!v.includes(id)) v.push(id);
+            localStorage.setItem('voted_issues', JSON.stringify(v));
+        }
+
+        function showToast(msg, type = "success") {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.className = `fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-2xl text-white text-sm font-bold shadow-2xl transition-all ${type === 'error' ? 'bg-red-600' : 'bg-slate-900'}`;
+            t.style.transform = 'translate(-50%, -20px)'; t.style.opacity = '1';
+            setTimeout(() => { t.style.transform = 'translate(-50%, 20px)'; t.style.opacity = '0'; }, 3000);
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function setCategory(v) {
+            currentFilter = v;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === v || btn.getAttribute('data-i18n') === v);
+                btn.classList.toggle('bg-slate-900', btn.classList.contains('active'));
+                btn.classList.toggle('text-white', btn.classList.contains('active'));
+            });
+            renderIssues();
+        }
+
+        function toggleView(v) {
+            document.getElementById('home-view').classList.toggle('hidden', v !== 'home');
+            document.getElementById('about-view').classList.toggle('hidden', v !== 'about');
+            window.scrollTo(0,0);
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('theme') === 'dark') toggleTheme();
+            
+            // Initial network check
+            const badge = document.getElementById('network-badge');
+            if (badge) {
+                if (!navigator.onLine) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            }
+
+            getFingerprint();
+            initData().then(() => {
+                // Background flush offline votes on initialization if network is available
+                if (navigator.onLine) syncPendingVotes();
+            });
+
+            // deep link loading logic
+            const params = new URLSearchParams(window.location.search);
+            const sid = params.get('id');
+            if (sid) setTimeout(() => openSentimentModal(parseInt(sid)), 1200);
+        }
+    </script>
+</body>
 </html>
