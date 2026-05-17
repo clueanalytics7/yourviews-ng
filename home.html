@@ -179,7 +179,8 @@
             <div class="p-8">
                 <h2 class="text-2xl font-800 mb-2" data-i18n="demoTitle">Almost Done!</h2>
                 <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="demoSub">We use this optional anonymized data to provide demographic insights. All fields are optional.</p>
-                <form id="demo-form" class="space-y-4">
+                <form id="demo-form" class="space-y-4" onsubmit="event.preventDefault();">
+                    
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="ageLabel">Age Group</label>
@@ -196,12 +197,39 @@
                             </select>
                         </div>
                     </div>
+
                     <div>
                         <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Neighborhood</label>
                         <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Downtown" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
                     </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="eduLabel">Education</label>
+                            <select id="demo-edu" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>High School</option>
+                                <option>Bachelors</option>
+                                <option>Masters</option>
+                                <option>PhD</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="empLabel">Employment</label>
+                            <select id="demo-emp" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                                <option value="" data-i18n="select">Select</option>
+                                <option>Student</option>
+                                <option>Employed</option>
+                                <option>Self-Employed</option>
+                                <option>Unemployed</option>
+                                <option>Retired</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="flex gap-4 pt-4">
-                        <button type="button" onclick="finalizeVote(true)" class="flex-1 p-4 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-all" data-i18n="skipBtn">Skip & Submit</button>
+                        <button type="button" onclick="finalizeVote(true)" class="flex-1 p-4 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all" data-i18n="skipBtn">Skip & Submit</button>
                         <button type="button" onclick="finalizeVote(false)" class="flex-1 bg-brand-600 text-white p-4 rounded-2xl font-bold shadow-lg transition-all hover:scale-105" data-i18n="castVote">Cast Vote</button>
                     </div>
                 </form>
@@ -231,7 +259,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby05rHr2m7A2dHoKVAs0kx3Z3Y7XoAU1b61DTtjKWLwkp70w8w6R5hwHA63UyvU1yDMdA/exec"; // REPLACE THIS
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby05rHr2m7A2dHoKVAs0kx3Z3Y7XoAU1b61DTtjKWLwkp70w8w6R5hwHA63UyvU1yDMdA/exec"; // REPLACE THIS WITH YOUR WEB APP URL
         
         let allIssues = [];
         let currentFilter = 'All';
@@ -249,6 +277,7 @@
                 commentPh: "Explain your perspective (optional)...", hoodPh: "e.g. Downtown", propPh: "Describe the policy issue...",
                 demoTitle: "Almost Done!", demoSub: "Aggregated data helps us analyze patterns. No field is compulsory.",
                 ageLabel: "Age Group", genderLabel: "Gender", hoodLabel: "Neighborhood", select: "Select",
+                eduLabel: "Education", empLabel: "Employment", closedText: "Voting Closed",
                 propTopic: "Propose Topic", submitBtn: "Submit Proposal", contactTitle: "Contact the Team",
                 legalTitle: "Data Privacy & Compliance", aboutText: "Connecting voices to policies."
             },
@@ -261,6 +290,7 @@
                 commentPh: "Talk your mind here (if you want)...", hoodPh: "e.g. Your Area", propPh: "Wetin be the issue...",
                 demoTitle: "Small Remain!", demoSub: "Help us know the group wey dey vote. You no must to answer.",
                 ageLabel: "Your Age", genderLabel: "Boy or Girl", hoodLabel: "Your Area", select: "Choose",
+                eduLabel: "School Level", empLabel: "Your Work", closedText: "Vote Don Close",
                 propTopic: "Suggess Topic", submitBtn: "Submit", contactTitle: "Talk to Us",
                 legalTitle: "How we dey keep your data", aboutText: "We dey join citizens to better policy."
             }
@@ -282,14 +312,14 @@
                 fp = 'fp_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
                 localStorage.setItem('user_fp', fp);
             }
-            document.getElementById('display-fp').innerText = fp;
+            const displayEl = document.getElementById('display-fp');
+            if (displayEl) displayEl.innerText = fp;
             return fp;
         }
 
         async function submitData(payload) {
             payload.fingerprint = await getFingerprint();
             try {
-                // Using fetch with no-cors as Gas requires it for cross-origin posts
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -303,17 +333,60 @@
 
         function renderIssues() {
             const grid = document.getElementById('issues-grid');
-            const filtered = currentFilter === 'All' ? allIssues : allIssues.filter(i => i.category === currentFilter);
             
+            // Filter logic: Exclude 'Archive' (case-insensitive check) and status that is not 'Active' or 'Closed'
+            const visibleIssues = allIssues.filter(i => {
+                const status = (i.status || '').toLowerCase().trim();
+                return status === 'active' || status === 'closed';
+            });
+
+            const filtered = currentFilter === 'All' ? visibleIssues : visibleIssues.filter(i => i.category === currentFilter);
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400">No active issues found in this category.</div>`;
+                return;
+            }
+
             grid.innerHTML = filtered.map(issue => {
                 const total = (issue.stragree || 0) + (issue.agree || 0) + (issue.neutral || 0) + (issue.disagree || 0) + (issue.strdisagree || 0);
                 const hasVotedLocal = hasVoted(issue.id);
+                const isClosed = (issue.status || '').toLowerCase().trim() === 'closed';
+
+                // Configure button action and text based on status and vote history
+                let btnText = '';
+                let btnAction = '';
+                let btnClass = '';
+
+                if (isClosed) {
+                    btnText = currentLang === 'en' ? 'Voting Closed' : 'Vote Don Close';
+                    btnClass = 'bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed';
+                    // Even if closed, let them view insights if already voted
+                    if (hasVotedLocal) {
+                        btnText = currentLang === 'en' ? 'View Insights (Closed)' : 'See wetin hapun';
+                        btnAction = `openSentimentModal(${issue.id})`;
+                        btnClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:opacity-90';
+                    } else {
+                        btnAction = `showToast("${currentLang === 'en' ? 'This issue has been closed' : 'This topic don close'}","error")`;
+                    }
+                } else {
+                    if (hasVotedLocal) {
+                        btnText = currentLang === 'en' ? 'View Insights' : 'See wetin hapun';
+                        btnClass = 'bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 hover:opacity-90';
+                    } else {
+                        btnText = currentLang === 'en' ? 'Cast Vote' : 'Vote Now';
+                        btnClass = 'bg-slate-900 dark:bg-white dark:text-slate-900 text-white hover:opacity-90 active:scale-95';
+                    }
+                    btnAction = `openSentimentModal(${issue.id})`;
+                }
 
                 return `
                 <div class="group p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all hover:-translate-y-1">
                     <div class="flex justify-between items-start mb-6">
                         <span class="text-[10px] font-800 uppercase tracking-widest px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500">${issue.category}</span>
-                        ${hasVotedLocal ? '<i class="fas fa-check-circle text-brand-600"></i>' : ''}
+                        <div class="flex items-center gap-2">
+                            ${isClosed ? `<span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-lg">${currentLang === 'en' ? 'Closed' : 'Close'}</span>` : ''}
+                            ${hasVotedLocal ? '<i class="fas fa-check-circle text-brand-600"></i>' : ''}
+                        </div>
                     </div>
                     <h3 class="text-xl font-800 mb-3">${issue.title}</h3>
                     <p class="text-slate-500 dark:text-slate-400 text-sm mb-6 line-clamp-2">${issue.description}</p>
@@ -331,10 +404,10 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="openSentimentModal(${issue.id})" class="flex-1 bg-slate-900 dark:bg-white dark:text-slate-900 text-white py-3.5 rounded-2xl text-sm font-bold">
-                            ${hasVotedLocal ? 'View Insights' : (currentLang === 'en' ? 'Cast Vote' : 'Vote Now')}
+                        <button onclick="${btnAction}" class="flex-1 py-3.5 rounded-2xl text-sm font-bold transition-all ${btnClass}">
+                            ${btnText}
                         </button>
-                        <button onclick="shareIssue(${issue.id})" class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                        <button onclick="shareIssue(${issue.id})" class="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all hover:bg-slate-200">
                             <i class="fas fa-share-alt"></i>
                         </button>
                     </div>
@@ -351,8 +424,30 @@
             document.getElementById('modal-title').innerText = issue.title;
             document.getElementById('modal-desc').innerText = issue.description;
             document.getElementById('modal-category').innerText = issue.category;
+            
+            // Check if voted or closed
+            const hasVotedLocal = hasVoted(id);
+            const isClosed = (issue.status || '').toLowerCase().trim() === 'closed';
+
             document.querySelectorAll('.sentiment-option').forEach(opt => opt.classList.remove('active', 'border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/10'));
             selectedSentimentValue = null;
+            document.getElementById('vote-comment').value = '';
+
+            const continueBtn = document.querySelector('[data-i18n="continue"]');
+            const commentArea = document.getElementById('vote-comment');
+
+            if (isClosed || hasVotedLocal) {
+                // Read-only insights view
+                if (continueBtn) continueBtn.style.display = 'none';
+                if (commentArea) commentArea.style.display = 'none';
+                document.getElementById('sentiment-list').style.pointerEvents = 'none';
+                showToast(currentLang === 'en' ? "Viewing live statistics/insights." : "De look how everybody vote.");
+            } else {
+                if (continueBtn) continueBtn.style.display = 'block';
+                if (commentArea) commentArea.style.display = 'block';
+                document.getElementById('sentiment-list').style.pointerEvents = 'auto';
+            }
+
             openModal('sentiment-modal');
         }
 
@@ -363,6 +458,8 @@
                     Object.keys(i18n.en).find(key => i18n.en[key] === val);
                 opt.classList.toggle('active', isActive);
                 opt.classList.toggle('border-brand-500', isActive);
+                opt.classList.toggle('bg-brand-50', isActive);
+                opt.classList.toggle('dark:bg-brand-900/10', isActive);
             });
         }
 
@@ -374,11 +471,20 @@
         }
 
         async function finalizeVote(isSkip) {
-            const demoData = isSkip ? {} : {
-                age: document.getElementById('demo-age').value,
-                gender: document.getElementById('demo-gender').value,
-                neighborhood: document.getElementById('demo-hood').value
+            const demoData = isSkip ? {
+                age: "N/A",
+                gender: "N/A",
+                neighborhood: "N/A",
+                education: "N/A",
+                employment: "N/A"
+            } : {
+                age: document.getElementById('demo-age').value || "N/A",
+                gender: document.getElementById('demo-gender').value || "N/A",
+                neighborhood: document.getElementById('demo-hood').value || "N/A",
+                education: document.getElementById('demo-edu').value || "N/A",
+                employment: document.getElementById('demo-emp').value || "N/A"
             };
+
             showToast("Recording...");
             const res = await submitData({
                 action: 'castVote',
@@ -387,11 +493,17 @@
                 comment: document.getElementById('vote-comment').value,
                 demographics: demoData
             });
+
             if (res.success) {
                 markVotedLocal(activeIssueId);
                 closeModal();
                 showToast("Vote recorded!");
+                
+                // Reset demographic form selection fields
+                document.getElementById('demo-form').reset();
                 initData();
+            } else {
+                showToast("Error occurred while saving.", "error");
             }
         }
 
@@ -411,13 +523,20 @@
         function shareIssue(id) {
             const issue = allIssues.find(i => i.id == id);
             const url = `${window.location.origin}${window.location.pathname}?id=${id}`;
-            const text = `Check out this policy issue: ${issue?.title || 'YourViews'}`;
+            const text = `Take a look at this policy issue on YourViews: "${issue?.title || 'YourViews Policy Hub'}"`;
             
             if (navigator.share) {
                 navigator.share({ title: 'YourViews', text: text, url: url })
                     .catch(console.error);
             } else {
-                navigator.clipboard.writeText(url).then(() => showToast("Link copied to clipboard!"));
+                // Standard copy execution
+                const tempInput = document.createElement("input");
+                tempInput.value = url;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast("Deep-link copied to clipboard!");
             }
         }
 
