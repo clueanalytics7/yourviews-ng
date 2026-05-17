@@ -95,7 +95,7 @@
                         <span data-i18n="hero1">Shape your city's</span> <span class="text-brand-600" data-i18n="hero2">Future.</span>
                     </h1>
                     <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed" data-i18n="heroSub">
-                        A transparent platform for citizens to voice their opinions on local policy changes. Real data for real impact.
+                        A transparent platform for citizens to voice their opinions on national and local polices and initiatives. Real data for real impact.
                     </p>
                     
                     <!-- Dynamically Generated Categories Wrapper -->
@@ -154,7 +154,7 @@
                         </div>
                         <h4 class="font-bold text-base mb-2" data-i18n="ourMission">Our Mission</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="missionDesc">
-                            Empowering local citizens to participate actively in democratic municipal review cycles. We aggregate local voices into quantitative data structures to aid community organizations and policy strategists.
+                            Empowering citizens to participate actively in democratic review cycles. We aggregate diverse voices into quantitative data structures to aid community organisations and policy strategists.
                         </p>
                     </div>
                     <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
@@ -163,7 +163,7 @@
                         </div>
                         <h4 class="font-bold text-base mb-2" data-i18n="howItWorks">How It Works</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="worksDesc">
-                            Policies and proposals are listed straight from municipal councils and direct community requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.
+                            Policies and proposals are listed straight from national initiatives and direct public requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.
                         </p>
                     </div>
                     <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
@@ -172,7 +172,7 @@
                         </div>
                         <h4 class="font-bold text-base mb-2" data-i18n="complianceTitle">Legal Compliance</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="complianceDesc">
-                            We preserve your structural rights to anonymized security. System designs strictly adhere to Nigeria Data Protection Regulations (NDPR) using temporary client tracking instead of gathering directly personal data.
+                            We preserve your structural rights to anonymised security. System designs strictly adhere to data protection regulations using temporary client tracking instead of gathering directly personal data.
                         </p>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                                 </p>
                                 <p class="flex items-center gap-3">
                                     <i class="fas fa-map-marker-alt text-brand-600 w-5"></i>
-                                    <span>YourViews Citizen Hub, Yaba, Lagos, Nigeria.</span>
+                                    <span>YourViews Citizen Hub, Wuse, Abuja, Nigeria.</span>
                                 </p>
                                 <p class="flex items-center gap-3">
                                     <i class="fas fa-clock text-brand-600 w-5"></i>
@@ -231,7 +231,7 @@
         <!-- Global Copyright Footer -->
         <footer class="mt-20 border-t border-slate-200 dark:border-slate-800 pt-8 text-center text-xs text-slate-400 dark:text-slate-500 space-y-2">
             <div>&copy; 2026 YourViews. All rights reserved.</div>
-            <div data-i18n="footerText" class="max-w-md mx-auto">Empowering communities through transparent public sentiment and policy research. Built in compliance with NDPR rules.</div>
+            <div data-i18n="footerText" class="max-w-md mx-auto">Empowering communities through transparent public sentiment and policy research. Built in compliance with data protection regulations.</div>
         </footer>
     </main>
 
@@ -372,8 +372,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Neighborhood</label>
-                        <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Downtown" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2" data-i18n="hoodLabel">Location</label>
+                        <input id="demo-hood" type="text" data-i18n-ph="hoodPh" placeholder="e.g. Area" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -443,24 +443,25 @@
 
         const i18n = {
             en: {
-                navAbout: "About", navPropose: "Propose Topic", hero1: "Shape your city's", hero2: "Future.",
-                heroSub: "A transparent platform for citizens to voice their opinions on local policy changes.",
+                navAbout: "About", navPropose: "Propose Topic", hero1: "Shape your community's", hero2: "Future.",
+                heroSub: "A transparent platform for citizens to voice their opinions on national and local policies and initiatives.",
                 catAll: "All", catInfra: "Infrastructure", catEnv: "Environment", catSocial: "Social",
                 opt1: "Strongly Agree", opt2: "Agree", opt3: "Neutral", opt4: "Disagree", opt5: "Strongly Disagree",
                 continue: "Continue", skipBtn: "Skip & Submit", castVote: "Cast Vote", sendBtn: "Send Message",
-                commentPh: "Explain your perspective (optional)...", hoodPh: "e.g. Downtown", propPh: "Describe the policy issue...",
+                commentPh: "Explain your perspective (optional)...", hoodPh: "e.g. Area", propPh: "Describe the policy issue...",
                 demoTitle: "Almost Done!", demoSub: "Aggregated data helps us analyze patterns. No field is compulsory.",
-                ageLabel: "Age Group", genderLabel: "Gender", hoodLabel: "Neighborhood", select: "Select",
+                ageLabel: "Age Group", genderLabel: "Gender", hoodLabel: "Location", select: "Select",
                 eduLabel: "Education", empLabel: "Employment", closedText: "Voting Closed",
                 propTopic: "Propose Topic", submitBtn: "Submit Proposal", contactTitle: "Contact the Team",
                 legalTitle: "Data Privacy & Compliance", aboutText: "Connecting voices to policies.",
                 liveBreakdown: "Live Opinion Breakdown", backBtn: "Go Back to Voting Feed",
                 ourMission: "Our Mission", howItWorks: "How It Works", complianceTitle: "Legal Compliance",
-                missionDesc: "Empowering local citizens to participate actively in democratic municipal review cycles. We aggregate local voices into quantitative data structures to aid community organizations and policy strategists.",
-                worksDesc: "Policies and proposals are listed straight from municipal councils and direct community requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.",
-                complianceDesc: "We preserve your structural rights to anonymized security. System designs strictly adhere to Nigeria Data Protection Regulations (NDPR) using temporary client tracking instead of gathering directly personal data.",
-                hubTitle: "Contact Information", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with NDPR rules."
+                missionDesc: "Empowering citizens to participate actively in democratic review cycles. We aggregate diverse voices into quantitative data structures to aid community organisations and policy strategists.",
+                worksDesc: "Policies and proposals are listed straight from national initiatives and direct public requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.",
+                complianceDesc: "We preserve your structural rights to anonymised security. System designs strictly adhere to data protection regulations using temporary client tracking instead of gathering directly personal data.",
+                hubTitle: "Contact Information", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with data protection regulations."
             },
+
             pidgin: {
                 navAbout: "About Us", navPropose: "Suggess Topic", hero1: "Make your city", hero2: "Beta.",
                 heroSub: "Better platform for citizen to talk their mind for policy mata. Correct data na beta impact.",
@@ -476,9 +477,9 @@
                 liveBreakdown: "How Everybody Vote", backBtn: "Go Back to Voting Feed",
                 ourMission: "Our Mission", howItWorks: "How E Dey Work", complianceTitle: "Legal Compliance",
                 missionDesc: "We want make citizens choose wetin dey hapun for their side. We dey gather your voices so that community people go fit plan policy well.",
-                worksDesc: "Policy structures dey land from direct community request. Once you press your vote, we go calculate and show everyone standard dynamic progress charts.",
-                complianceDesc: "Your privacy get backing well-well. System designs respect data rules (NDPR) and we no dey save any private phone number or name.",
-                hubTitle: "How to reach Us", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with NDPR rules."
+                worksDesc: "Policy structures dey land from direct public request. Once you press your vote, we go calculate and show everyone standard dynamic progress charts.",
+                complianceDesc: "Your privacy get backing well-well. System designs respect data protection rules and we no dey save any private phone number or name.",
+                hubTitle: "How to reach Us", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with data protection regulations."
             }
         };
 
@@ -824,13 +825,13 @@
             const demoData = isSkip ? {
                 age: "N/A",
                 gender: "N/A",
-                neighborhood: "N/A",
+                location: "N/A",
                 education: "N/A",
                 employment: "N/A"
             } : {
                 age: document.getElementById('demo-age').value || "N/A",
                 gender: document.getElementById('demo-gender').value || "N/A",
-                neighborhood: document.getElementById('demo-hood').value || "N/A",
+                location: document.getElementById('demo-hood').value || "N/A",
                 education: document.getElementById('demo-edu').value || "N/A",
                 employment: document.getElementById('demo-emp').value || "N/A"
             };
