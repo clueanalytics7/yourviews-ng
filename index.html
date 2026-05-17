@@ -1,10 +1,3 @@
-<!-- <!DOCTYPE html>
- <html>
- <head><meta http-equiv="refresh" content="0; url=home.html"></head>
- <body>Redirecting...</body>
- </html> -->
-
-
 <!DOCTYPE html>
 <html lang="en" class="light">
 <head>
@@ -73,18 +66,19 @@
                     <span class="text-xl font-800 tracking-tight bg-gradient-to-r from-brand-600 to-emerald-600 bg-clip-text text-transparent">YourViews</span>
                 </div>
                 
-                <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex items-center gap-1.5 sm:gap-4">
                     <!-- Network Status indicator -->
-                    <span id="network-badge" class="hidden text-xs font-bold px-2 py-1 bg-amber-500 text-white rounded-lg animate-pulse">Offline</span>
+                    <span id="network-badge" class="hidden text-[10px] sm:text-xs font-bold px-2 py-1 bg-amber-500 text-white rounded-lg animate-pulse">Offline</span>
                     
-                    <button onclick="toggleLanguage()" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <button onclick="toggleLanguage()" class="text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <span id="lang-label">Pidgin</span>
                     </button>
-                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <button onclick="toggleTheme()" class="p-1.5 sm:p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <i id="theme-icon" class="fas fa-moon"></i>
                     </button>
-                    <button onclick="toggleView('about')" data-i18n="navAbout" class="hidden sm:block text-sm font-semibold hover:text-brand-600">About</button>
-                    <button onclick="openModal('proposal-modal')" data-i18n="navPropose" class="bg-brand-600 text-white px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
+                    <!-- Enhanced mobile navigation compatibility (Always visible, clean spacing) -->
+                    <button onclick="toggleView('about')" data-i18n="navAbout" class="text-xs sm:text-sm font-semibold px-1.5 py-1 text-slate-600 dark:text-slate-300 hover:text-brand-600 transition-colors">About</button>
+                    <button onclick="openModal('proposal-modal')" data-i18n="navPropose" class="bg-brand-600 text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95">
                         Propose Topic
                     </button>
                 </div>
@@ -92,78 +86,153 @@
         </div>
     </nav>
 
-    <main class="pt-24 pb-20 px-4 max-w-7xl mx-auto">
-        <div id="home-view">
-            <div class="mb-12 text-center">
-                <h1 class="text-4xl sm:text-5xl font-800 mb-4 tracking-tight leading-tight">
-                    <span data-i18n="hero1">Shape your city's</span> <span class="text-brand-600" data-i18n="hero2">Future.</span>
-                </h1>
-                <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed" data-i18n="heroSub">
-                    A transparent platform for citizens to voice their opinions on local policy changes. Real data for real impact.
-                </p>
-                
-                <div class="flex flex-wrap justify-center gap-2 mt-8">
-                    <button onclick="setCategory('All')" class="category-btn active px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catAll">All</button>
-                    <button onclick="setCategory('Infrastructure')" class="category-btn px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catInfra">Infrastructure</button>
-                    <button onclick="setCategory('Environment')" class="category-btn px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catEnv">Environment</button>
-                    <button onclick="setCategory('Social')" class="category-btn px-6 py-2 rounded-full border-2 border-slate-200 dark:border-slate-800 text-sm font-bold transition-all" data-i18n="catSocial">Social</button>
-                </div>
-            </div>
-
-            <!-- Issues Grid (Holds pulsing skeletons initially) -->
-            <div id="issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Skeleton Card 1 -->
-                <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
-                    <div class="h-4 w-1/4 shimmer rounded"></div>
-                    <div class="h-6 w-3/4 shimmer rounded"></div>
-                    <div class="h-12 w-full shimmer rounded-xl"></div>
-                    <div class="h-8 w-full shimmer rounded-lg"></div>
-                </div>
-                <!-- Skeleton Card 2 -->
-                <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
-                    <div class="h-4 w-1/4 shimmer rounded"></div>
-                    <div class="h-6 w-3/4 shimmer rounded"></div>
-                    <div class="h-12 w-full shimmer rounded-xl"></div>
-                    <div class="h-8 w-full shimmer rounded-lg"></div>
-                </div>
-                <!-- Skeleton Card 3 -->
-                <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
-                    <div class="h-4 w-1/4 shimmer rounded"></div>
-                    <div class="h-6 w-3/4 shimmer rounded"></div>
-                    <div class="h-12 w-full shimmer rounded-xl"></div>
-                    <div class="h-8 w-full shimmer rounded-lg"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="about-view" class="hidden max-w-4xl mx-auto py-12">
-            <h2 class="text-3xl font-800 mb-6" data-i18n="navAbout">About YourViews</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <div class="space-y-4">
-                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="aboutText">
-                        This project was created to bridge the gap between policy makers and everyday citizens. We believe that when data is transparent and accessible, communities thrive.
+    <main class="pt-24 pb-20 px-4 max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)]">
+        <div class="flex-grow">
+            <!-- HOME VIEW -->
+            <div id="home-view">
+                <div class="mb-12 text-center">
+                    <h1 class="text-4xl sm:text-5xl font-800 mb-4 tracking-tight leading-tight">
+                        <span data-i18n="hero1">Shape your city's</span> <span class="text-brand-600" data-i18n="hero2">Future.</span>
+                    </h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed" data-i18n="heroSub">
+                        A transparent platform for citizens to voice their opinions on local policy changes. Real data for real impact.
                     </p>
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                        <h3 class="font-bold mb-4" data-i18n="contactTitle">Contact the Team</h3>
-                        <form id="contact-form" onsubmit="handleSuggestion(event, 'Contact')" class="space-y-4">
-                            <input type="email" id="contact-email" placeholder="Email Address" required class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none">
-                            <textarea id="contact-content" placeholder="How can we help?" rows="3" required class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none"></textarea>
-                            <button type="submit" id="contact-submit-btn" class="w-full bg-brand-600 text-white py-3 rounded-xl font-bold transition-all hover:opacity-90" data-i18n="sendBtn">Send Message</button>
-                        </form>
+                    
+                    <!-- Dynamically Generated Categories Wrapper -->
+                    <div id="categories-container" class="flex flex-wrap justify-center gap-2 mt-8">
+                        <div class="h-10 w-24 shimmer rounded-full inline-block"></div>
+                        <div class="h-10 w-24 shimmer rounded-full inline-block"></div>
+                        <div class="h-10 w-24 shimmer rounded-full inline-block"></div>
                     </div>
                 </div>
-                
-                <div class="bg-slate-100 dark:bg-slate-900/50 p-8 rounded-[40px] border border-slate-200 dark:border-slate-800">
-                    <h3 class="font-800 text-xl mb-4" data-i18n="legalTitle">Data Privacy & Compliance</h3>
-                    <div class="space-y-4 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        <p><strong class="text-slate-900 dark:text-slate-200">NDPR Compliance:</strong> In accordance with the Nigeria Data Protection Regulation (NDPR), YourViews is committed to protecting the personal data of our users. We implement technical and organizational measures to ensure a level of security appropriate to the risk.</p>
-                        <p><strong class="text-slate-900 dark:text-slate-200">Data Minimization:</strong> We only collect the minimum information necessary for policy analysis. All demographic data is optional and used solely for aggregated statistical purposes.</p>
-                        <p><strong class="text-slate-900 dark:text-slate-200">Anonymity:</strong> Votes are linked to browser fingerprints to prevent duplication, but we do not store personally identifiable information (PII) like names or phone numbers.</p>
-                        <p><strong class="text-slate-900 dark:text-slate-200">Your Rights:</strong> Under NDPR, you have the right to access your data, request deletion, or object to processing. Since our data is anonymized, identifying specific records for deletion requires your unique Fingerprint ID: <code id="display-fp" class="bg-slate-200 dark:bg-slate-800 px-1 rounded">...</code></p>
+
+                <!-- Issues Grid (Holds pulsing skeletons initially) -->
+                <div id="issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Skeleton Card 1 -->
+                    <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                        <div class="h-4 w-1/4 shimmer rounded"></div>
+                        <div class="h-6 w-3/4 shimmer rounded"></div>
+                        <div class="h-12 w-full shimmer rounded-xl"></div>
+                        <div class="h-8 w-full shimmer rounded-lg"></div>
+                    </div>
+                    <!-- Skeleton Card 2 -->
+                    <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                        <div class="h-4 w-1/4 shimmer rounded"></div>
+                        <div class="h-6 w-3/4 shimmer rounded"></div>
+                        <div class="h-12 w-full shimmer rounded-xl"></div>
+                        <div class="h-8 w-full shimmer rounded-lg"></div>
+                    </div>
+                    <!-- Skeleton Card 3 -->
+                    <div class="p-6 rounded-[32px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+                        <div class="h-4 w-1/4 shimmer rounded"></div>
+                        <div class="h-6 w-3/4 shimmer rounded"></div>
+                        <div class="h-12 w-full shimmer rounded-xl"></div>
+                        <div class="h-8 w-full shimmer rounded-lg"></div>
                     </div>
                 </div>
             </div>
+
+            <!-- ABOUT VIEW -->
+            <div id="about-view" class="hidden max-w-4xl mx-auto py-6">
+                
+                <!-- Intuitive navigation back to Main View -->
+                <div class="flex items-center justify-between mb-8">
+                    <button onclick="toggleView('home')" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-bold shadow-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                        <i class="fas fa-arrow-left text-brand-600"></i>
+                        <span data-i18n="backBtn">Go Back to Voting Feed</span>
+                    </button>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Platform Portal</span>
+                </div>
+
+                <h2 class="text-3xl font-800 mb-6" data-i18n="navAbout">About YourViews</h2>
+                
+                <!-- Rich contextual platform breakdown grids -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 mb-4">
+                            <i class="fas fa-bullseye text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-base mb-2" data-i18n="ourMission">Our Mission</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="missionDesc">
+                            Empowering local citizens to participate actively in democratic municipal review cycles. We aggregate local voices into quantitative data structures to aid community organizations and policy strategists.
+                        </p>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 mb-4">
+                            <i class="fas fa-shield-alt text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-base mb-2" data-i18n="howItWorks">How It Works</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="worksDesc">
+                            Policies and proposals are listed straight from municipal councils and direct community requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.
+                        </p>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 mb-4">
+                            <i class="fas fa-user-shield text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-base mb-2" data-i18n="complianceTitle">Legal Compliance</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" data-i18n="complianceDesc">
+                            We preserve your structural rights to anonymized security. System designs strictly adhere to Nigeria Data Protection Regulations (NDPR) using temporary client tracking instead of gathering directly personal data.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div class="space-y-6">
+                        <div class="bg-white dark:bg-slate-900 p-8 rounded-[40px] border border-slate-200 dark:border-slate-800">
+                            <h3 class="font-bold text-xl mb-4" data-i18n="contactTitle">Contact the Team</h3>
+                            <form id="contact-form" onsubmit="handleSuggestion(event, 'Contact')" class="space-y-4">
+                                <input type="email" id="contact-email" placeholder="Email Address" required class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none">
+                                <textarea id="contact-content" placeholder="How can we help?" rows="3" required class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none"></textarea>
+                                <button type="submit" id="contact-submit-btn" class="w-full bg-brand-600 text-white py-3 rounded-xl font-bold transition-all hover:opacity-90 animate-pulse hover:animate-none" data-i18n="sendBtn">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-100 dark:bg-slate-900/50 p-8 rounded-[40px] border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-800 text-xl mb-4" data-i18n="hubTitle">Contact Information</h3>
+                            <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
+                                <p class="flex items-center gap-3">
+                                    <i class="fas fa-envelope text-brand-600 w-5"></i>
+                                    <span>support@yourviews.org</span>
+                                </p>
+                                <p class="flex items-center gap-3">
+                                    <i class="fas fa-phone text-brand-600 w-5"></i>
+                                    <span>+234 (0) 1 800-YOURVIEWS</span>
+                                </p>
+                                <p class="flex items-center gap-3">
+                                    <i class="fas fa-map-marker-alt text-brand-600 w-5"></i>
+                                    <span>YourViews Citizen Hub, Yaba, Lagos, Nigeria.</span>
+                                </p>
+                                <p class="flex items-center gap-3">
+                                    <i class="fas fa-clock text-brand-600 w-5"></i>
+                                    <span>Mon - Fri, 9:00 AM - 5:00 PM WAT</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Anonymity Information footer link -->
+                        <div class="pt-6 border-t border-slate-200 dark:border-slate-800 mt-6 text-xs text-slate-400">
+                            Fingerprint ID: <code id="display-fp" class="bg-slate-200 dark:bg-slate-800 px-1 rounded">...</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Back to Home Navigation trigger -->
+                <div class="flex justify-center pt-4">
+                    <button onclick="toggleView('home')" class="bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold px-8 py-3.5 rounded-full shadow-lg transition-all hover:opacity-90">
+                        <span data-i18n="backBtn">Go Back to Voting Feed</span>
+                    </button>
+                </div>
+            </div>
         </div>
+
+        <!-- Global Copyright Footer -->
+        <footer class="mt-20 border-t border-slate-200 dark:border-slate-800 pt-8 text-center text-xs text-slate-400 dark:text-slate-500 space-y-2">
+            <div>&copy; 2026 YourViews. All rights reserved.</div>
+            <div data-i18n="footerText" class="max-w-md mx-auto">Empowering communities through transparent public sentiment and policy research. Built in compliance with NDPR rules.</div>
+        </footer>
     </main>
 
     <!-- Modal: Vote Sentiment & Insights -->
@@ -385,7 +454,12 @@
                 eduLabel: "Education", empLabel: "Employment", closedText: "Voting Closed",
                 propTopic: "Propose Topic", submitBtn: "Submit Proposal", contactTitle: "Contact the Team",
                 legalTitle: "Data Privacy & Compliance", aboutText: "Connecting voices to policies.",
-                liveBreakdown: "Live Opinion Breakdown"
+                liveBreakdown: "Live Opinion Breakdown", backBtn: "Go Back to Voting Feed",
+                ourMission: "Our Mission", howItWorks: "How It Works", complianceTitle: "Legal Compliance",
+                missionDesc: "Empowering local citizens to participate actively in democratic municipal review cycles. We aggregate local voices into quantitative data structures to aid community organizations and policy strategists.",
+                worksDesc: "Policies and proposals are listed straight from municipal councils and direct community requests. Once you cast a vote, your response is validated, logged anonymously, and dynamically calculated into live visual analytics.",
+                complianceDesc: "We preserve your structural rights to anonymized security. System designs strictly adhere to Nigeria Data Protection Regulations (NDPR) using temporary client tracking instead of gathering directly personal data.",
+                hubTitle: "Contact Information", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with NDPR rules."
             },
             pidgin: {
                 navAbout: "About Us", navPropose: "Suggess Topic", hero1: "Make your city", hero2: "Beta.",
@@ -399,7 +473,12 @@
                 eduLabel: "School Level", empLabel: "Your Work", closedText: "Vote Don Close",
                 propTopic: "Suggess Topic", submitBtn: "Submit", contactTitle: "Talk to Us",
                 legalTitle: "How we dey keep your data", aboutText: "We dey join citizens to better policy.",
-                liveBreakdown: "How Everybody Vote"
+                liveBreakdown: "How Everybody Vote", backBtn: "Go Back to Voting Feed",
+                ourMission: "Our Mission", howItWorks: "How E Dey Work", complianceTitle: "Legal Compliance",
+                missionDesc: "We want make citizens choose wetin dey hapun for their side. We dey gather your voices so that community people go fit plan policy well.",
+                worksDesc: "Policy structures dey land from direct community request. Once you press your vote, we go calculate and show everyone standard dynamic progress charts.",
+                complianceDesc: "Your privacy get backing well-well. System designs respect data rules (NDPR) and we no dey save any private phone number or name.",
+                hubTitle: "How to reach Us", footerText: "Empowering communities through transparent public sentiment and civic policy research. Built in compliance with NDPR rules."
             }
         };
 
@@ -409,12 +488,16 @@
                 const response = await fetch(`${SCRIPT_URL}?action=getIssues`);
                 if (!response.ok) throw new Error("HTTP error on load fetching issues.");
                 allIssues = await response.json();
+                
+                // Dynamically build the category selection buttons on load
+                renderCategories();
                 renderIssues();
             } catch (err) {
                 showToast("Connection failed. Showing cached data if available.", "error");
                 const cached = localStorage.getItem('cached_issues');
                 if (cached) {
                     allIssues = JSON.parse(cached);
+                    renderCategories();
                     renderIssues();
                 }
             }
@@ -520,6 +603,44 @@
             const badge = document.getElementById('network-badge');
             if (badge) badge.classList.remove('hidden');
         });
+
+        // ============ DYNAMIC CATEGORIES RENDER ============
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            if (!container) return;
+
+            // Extract unique active/closed categories dynamically from active dataset
+            const visibleIssues = allIssues.filter(i => {
+                const status = (i.status || '').toLowerCase().trim();
+                return status === 'active' || status === 'closed';
+            });
+
+            const rawCategories = visibleIssues.map(i => i.category).filter(Boolean);
+            const uniqueCategories = ['All', ...new Set(rawCategories)];
+
+            container.innerHTML = uniqueCategories.map(cat => {
+                const isActive = currentFilter === cat;
+                
+                // Track standard pre-configured translation targets
+                let i18nAttr = '';
+                if (cat === 'All') i18nAttr = 'data-i18n="catAll"';
+                else if (cat === 'Infrastructure') i18nAttr = 'data-i18n="catInfra"';
+                else if (cat === 'Environment') i18nAttr = 'data-i18n="catEnv"';
+                else if (cat === 'Social') i18nAttr = 'data-i18n="catSocial"';
+
+                const labelText = (currentLang === 'pidgin' && i18n.pidgin[cat.toLowerCase()]) ? i18n.pidgin[cat.toLowerCase()] : cat;
+
+                const activeClass = isActive 
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 border-slate-900 dark:border-white shadow-md scale-105' 
+                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900';
+
+                return `
+                    <button onclick="setCategory('${cat}')" class="category-btn px-6 py-2 rounded-full border-2 text-sm font-bold transition-all duration-300 ${activeClass}" ${i18nAttr}>
+                        ${labelText}
+                    </button>
+                `;
+            }).join('');
+        }
 
         // ============ DOM RENDER SYSTEM ============
         function renderIssues() {
@@ -797,6 +918,7 @@
             currentLang = currentLang === 'en' ? 'pidgin' : 'en';
             document.getElementById('lang-label').innerText = currentLang === 'en' ? 'Pidgin' : 'English';
             updateI18n();
+            renderCategories();
             renderIssues();
         }
 
@@ -847,11 +969,7 @@
 
         function setCategory(v) {
             currentFilter = v;
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === v || btn.getAttribute('data-i18n') === v);
-                btn.classList.toggle('bg-slate-900', btn.classList.contains('active'));
-                btn.classList.toggle('text-white', btn.classList.contains('active'));
-            });
+            renderCategories();
             renderIssues();
         }
 
